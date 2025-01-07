@@ -6,7 +6,7 @@ import lombok.*;
 @Entity
 @Table(name = "product_image")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class ProductImage {

@@ -1,6 +1,7 @@
 package com.antique.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -8,7 +9,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "sales_product")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SalesProduct {
 
     @Id

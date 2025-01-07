@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Table(name = "review")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Review {

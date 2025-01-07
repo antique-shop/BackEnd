@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "category")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Category {

@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "purchase")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Purchase {
