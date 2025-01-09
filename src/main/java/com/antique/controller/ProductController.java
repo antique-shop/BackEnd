@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,5 +27,14 @@ public class ProductController {
     @GetMapping("/getProducts")
     public List<ProductDTO> getProducts() {
         return productService.getAllProducts();
+    }
+
+    /*
+    상품 카테고리별 목록 조회
+     */
+    @Operation(summary = "상품 카테고리별 목록 조회", description = "상품의 카테고리별 목록을 조회하는 API 입니다.")
+    @GetMapping("/getProductsByCategory")
+    public List<ProductDTO> getProductsByCategory(@RequestParam Long categoryId) {
+        return productService.getProductsByCategory(categoryId);
     }
 }
