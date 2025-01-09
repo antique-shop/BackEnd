@@ -10,5 +10,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // 판매자 ID로 상품 목록 조회
     List<Product> findBySeller_UserId(Long sellerId);
 
+    // 카테고리ID로 상품 목록 조회
+    List<Product> findByCategory_CategoryId(Long categoryId);
 }
 
