@@ -1,5 +1,6 @@
 package com.antique.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,11 +9,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDTO {
+    @Schema(description = "상품 ID")
     private Long productId;
+
+    @Schema(description = "상품명")
     private String name;
+
+    @Schema(description = "상품 상세 설명")
     private String description;
+
+    @Schema(description = "상품 가격")
     private int price;
+
+    @Schema(description = "상품 상태", example = "AVAILABLE")
     private String status;
+
+    @Schema(description = "상품 이미지")
     private String productImage;
+
+    @Schema(description = "상품 판매자 닉네임")
     private String sellerNickName;
 }
