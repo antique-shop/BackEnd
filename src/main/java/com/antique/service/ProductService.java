@@ -31,4 +31,23 @@ public class ProductService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    /*
+    상품 카테고리별 목록 조회
+    */
+    public List<ProductDTO> getProductsByCategory(Long categoryId) {
+        List<Product> products = productRepository.findByCategory_CategoryId(categoryId);
+
+        return products.stream()
+                .map(product -> new ProductDTO (
+                        product.getProductId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getStatus().toString(),
+                        product.getProductImage(),
+                        product.getSeller().getNickname()
+                ))
+                .collect(Collectors.toList());
+    }
 }
