@@ -71,4 +71,28 @@ class ProductServiceTest {
         // then
         assertEquals(0, result.size());
     }
+
+    /*
+     * [ 상품 카테고리별 목록 조회 ]
+     * */
+    @Test
+    public void testGetProductsByCategory() {
+        // Given
+        Long categoryId = 1L;
+        Product product1 = new Product(1L, "Product 1", "Description 1", 100, "AVAILABLE", "image1.jpg", "nickname1");
+        Product product2 = new Product(2L, "Product 2", "Description 2", 200, "SOLD_OUT", "image2.jpg", "nickname2");
+
+        when(productRepository.findByCategory_CategoryId(categoryId)).thenReturn(Arrays.asList(product1, product2));
+
+        // When
+        List<ProductDTO> result = productService.getProductsByCategory(categoryId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Product 1", result.get(0).getName());
+        assertEquals("Product 2", result.get(1).getName());
+        assertEquals("nickname1", result.get(0).getSellerNickName());
+        assertEquals("nickname2", result.get(1).getSellerNickName());
+    }
 }
