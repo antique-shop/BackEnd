@@ -13,6 +13,8 @@ import java.util.List;
 @Table(name = "user")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -59,6 +61,11 @@ public class User {
     // Enum 정의
     public enum Role {
         ADMIN, USER
+    }
+
+    public void updateNicknameAndAddress(String nickname, String address) {
+        this.nickname = nickname;
+        this.address = address;
     }
 }
 
