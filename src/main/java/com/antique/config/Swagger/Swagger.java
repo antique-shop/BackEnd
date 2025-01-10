@@ -16,3 +16,4 @@ public class Swagger {
     Info info = new Info().title("Antique").version("0.0.1").description(
             "프로젝트 [Antique]");
 }
+
