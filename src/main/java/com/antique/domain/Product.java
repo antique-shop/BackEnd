@@ -68,5 +68,17 @@ public class Product {
     public enum Status {
         AVAILABLE, SOLD_OUT, DELETED
     }
+
+    public Product(Long productId, String name, String description, int price, String status, String image, String sellerNickname) {
+        this.productId = productId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.status = Status.valueOf(status);
+        this.productImage = image;
+        this.seller = new User();
+        this.category = new Category();
+        this.isDeleted = false;
+    }
 }
 

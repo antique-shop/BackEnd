@@ -1,0 +1,37 @@
+name: "🐞 Bug"
+description: "버그 수정"
+labels: ["bug"]
+body:
+  - type: textarea
+    attributes:
+      label: "🐛 버그 설명"
+      description: "발견한 버그에 대해 설명해주세요. 재현할 수 있는 단계와 함께 적어주시면 좋습니다."
+      placeholder: "버그의 상세 설명을 적어주세요."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "🔍 재현 방법"
+      description: "버그를 재현할 수 있는 방법을 단계별로 작성해주세요."
+      placeholder: "예시: 1. 로그인하기 -> 2. 프로필 페이지로 이동하기 -> 3. 에러 발생"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "📸 예상 결과와 실제 결과"
+      description: "예상했던 결과와 실제 결과를 비교해서 적어주세요."
+      placeholder: "예시: 예상: 로그인이 성공해야 함 / 실제: 500 에러 발생"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "💻 환경"
+      description: "버그가 발생한 환경에 대한 정보를 제공해주세요. (브라우저, 운영체제 등)"
+      placeholder: "예시: Chrome 92, macOS Big Sur"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "🙋🏻 참고 자료"
+      description: "스크린샷, 로그 파일, 링크 등 참고할 자료가 있다면 작성해 주세요."
+      placeholder: "추가 정보"
