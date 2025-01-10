@@ -10,7 +10,7 @@ public class Swagger {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(info).openapi("3.0.0");
+                .info(info);
     }
 
     Info info = new Info().title("Antique").version("0.0.1").description(
