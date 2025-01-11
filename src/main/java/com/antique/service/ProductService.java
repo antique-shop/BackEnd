@@ -16,6 +16,9 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    /*
+    상품 전체 목록 조회
+    */
     public List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return convertToProductDTO(products);
