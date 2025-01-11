@@ -18,18 +18,7 @@ public class ProductService {
 
     public List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
-
-        return products.stream()
-                .map(product -> new ProductDTO(
-                        product.getProductId(),
-                        product.getName(),
-                        product.getDescription(),
-                        product.getPrice(),
-                        product.getStatus().toString(),
-                        product.getProductImage(),
-                        product.getSeller().getNickname()
-                ))
-                .collect(Collectors.toList());
+        return convertToProductDTO(products);
     }
 
     /*
@@ -37,9 +26,12 @@ public class ProductService {
     */
     public List<ProductDTO> getProductsByCategory(Long categoryId) {
         List<Product> products = productRepository.findByCategory_CategoryId(categoryId);
+        return convertToProductDTO(products);
+    }
 
+    private List<ProductDTO> convertToProductDTO(List<Product> products) {
         return products.stream()
-                .map(product -> new ProductDTO (
+                .map(product -> new ProductDTO(
                         product.getProductId(),
                         product.getName(),
                         product.getDescription(),
