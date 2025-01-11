@@ -77,6 +77,7 @@ public class Product {
         this.status = Status.valueOf(status);
         this.productImage = image;
         this.seller = new User();
+        this.seller.setNickname(sellerNickname);
         this.category = new Category();
         this.isDeleted = false;
     }

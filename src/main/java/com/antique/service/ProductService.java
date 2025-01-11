@@ -16,9 +16,23 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    /*
+    상품 전체 목록 조회
+    */
     public List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
+        return convertToProductDTO(products);
+    }
 
+    /*
+    상품 카테고리별 목록 조회
+    */
+    public List<ProductDTO> getProductsByCategory(Long categoryId) {
+        List<Product> products = productRepository.findByCategory_CategoryId(categoryId);
+        return convertToProductDTO(products);
+    }
+
+    private List<ProductDTO> convertToProductDTO(List<Product> products) {
         return products.stream()
                 .map(product -> new ProductDTO(
                         product.getProductId(),
