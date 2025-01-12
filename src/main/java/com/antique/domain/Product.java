@@ -56,7 +56,7 @@ public class Product {
     private List<Dibs> dibs;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Purchase> purchases;
+    private List<SalesProduct> salesProducts;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Review> reviews;

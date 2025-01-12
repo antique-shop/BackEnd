@@ -1,12 +1,12 @@
 package com.antique.repository;
 
-import com.antique.domain.Sale;
+import com.antique.domain.SalesProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface SaleRepository extends JpaRepository<Sale, Long> {
+public interface SaleRepository extends JpaRepository<SalesProduct, Long> {
 
     // 특정 사용자의 판매 내역 조회
-    List<Sale> findByUser_UserId(Long userId);
+    List<SalesProduct> findByUser_UserId(Long userId);
 }

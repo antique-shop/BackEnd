@@ -50,9 +50,6 @@ public class User {
     private Boolean isDeleted; // 삭제 여부
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Coupon> coupons;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Dibs> dibs;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
