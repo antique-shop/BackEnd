@@ -2,6 +2,7 @@ package com.antique.service;
 
 import com.antique.domain.User;
 import com.antique.dto.UserRequestDto;
+import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class UserService {
     public Long updateUserDetails(Long userId, UserRequestDto userRequestDto) {
         // 1. 기존 유저 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException(userId + "번 userid의 사용자를 찾을 수 없습니다: "));
+                .orElseThrow(UserNotFoundException::new);
 
         // 2. 닉네임과 주소 업데이트
         user.updateNicknameAndAddress(userRequestDto.getNickname(), userRequestDto.getAddress());
