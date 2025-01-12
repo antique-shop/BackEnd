@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface SaleRepository extends JpaRepository<SalesProduct, Long> {
+public interface SalesProductRepository extends JpaRepository<SalesProduct, Long> {
 
     // 특정 사용자의 판매 내역 조회
     List<SalesProduct> findByUser_UserId(Long userId);
