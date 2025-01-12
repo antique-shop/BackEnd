@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "sale")
+@Table(name = "sales_product")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SalesProduct {
