@@ -1,4 +1,4 @@
-package com.antique.dto;
+package com.antique.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
