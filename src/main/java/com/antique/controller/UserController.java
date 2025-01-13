@@ -19,7 +19,7 @@ public class UserController {
     @Operation(summary = "회원 정보 입력", description = "사용자의 닉네임과 주소를 설정하는 API입니다.")
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> updateUserDetails(@RequestBody UserRequestDto userRequestDto) {
-        Long userId = userRequestDto.getUserid();
+        Long userId = userRequestDto.getUserId();
         // 서비스 호출
         Long updatedUserId = userService.updateUserDetails(userId, userRequestDto);
 

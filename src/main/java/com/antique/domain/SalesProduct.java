@@ -14,28 +14,28 @@ public class SalesProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long salesDetailId;
+    private Long salesProductId;
 
     @ManyToOne
-    @JoinColumn(name = "saleId", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     @ToString.Exclude
-    private Sale sale;
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "productId", nullable = false)
+    @JoinColumn(name = "productId")
     @ToString.Exclude
     private Product product;
 
-    @Column(nullable = false)
+    @Column
     private int salesPrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
+    @Column
+    private SalesProduct.Status status;
 
     public enum Status {
-        AVAILABLE, SOLD_OUT
+        ONGOING, COMPLETED, AVAILABLE
     }
-    // 판매 중, 판매 완료
+    //  거래 중(예약 중), 거래 완료, 판매 중(거래 가능)
 }
 
