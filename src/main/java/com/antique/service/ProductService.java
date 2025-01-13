@@ -44,6 +44,9 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
     }
 
+    /*
+    응답 dto에 맞게 변환하는 메서드 (상품 전체 목록 조회 / 상품 카테고리별 목록 조회 API에 사용)
+    * */
     private List<ProductDTO> convertToProductDTO(List<Product> products) {
         return products.stream()
                 .map(product -> new ProductDTO(
