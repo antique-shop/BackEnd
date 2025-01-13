@@ -36,7 +36,7 @@ public class ProductService {
     }
 
     /*
-    상품 상세 보기
+    상품 상세 정보 조회
     */
     public ResponseEntity<ProductInfoDTO> getProductInfo(Long productId) {
         return productRepository.findById(productId)
