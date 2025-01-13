@@ -1,11 +1,14 @@
 package com.antique.controller;
 
 import com.antique.dto.ProductDTO;
+import com.antique.dto.ProductInfoDTO;
 import com.antique.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,5 +42,15 @@ public class ProductController {
             @Parameter(description="조회할 카테고리 ID", required = true)
             @RequestParam Long categoryId) {
         return productService.getProductsByCategory(categoryId);
+    }
+
+    /*
+    상품 상세 보기
+    */
+    @Operation(summary = "상품 상세 보기", description = "상품의 상세 정보를 조회하는 API 입니다.")
+    @Parameters({@Parameter(name = "productId", description = "상품 ID, query string")})
+    @GetMapping("/getProductInfo")
+    public ResponseEntity<ProductInfoDTO> getProductInfo(@RequestParam Long productId) {
+        return productService.getProductInfo(productId);
     }
 }
