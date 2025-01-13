@@ -39,9 +39,6 @@ public class User {
 
     private float rating; // 평점
 
-    @Enumerated(EnumType.STRING)
-    private Role role; // ENUM 타입 (예: ADMIN, USER 등)
-
     @Column(nullable = false, updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
@@ -54,11 +51,6 @@ public class User {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<Product> products;
-
-    // Enum 정의
-    public enum Role {
-        ADMIN, USER
-    }
 
     public void updateNicknameAndAddress(String nickname, String address) {
         this.nickname = nickname;
