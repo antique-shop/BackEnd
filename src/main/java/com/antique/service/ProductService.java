@@ -2,9 +2,12 @@ package com.antique.service;
 
 import com.antique.domain.Product;
 import com.antique.dto.ProductDTO;
+import com.antique.dto.ProductInfoDTO;
+import com.antique.exception.product.ProductErrorCode;
+import com.antique.exception.product.ProductNotFoundException;
 import com.antique.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +33,15 @@ public class ProductService {
     public List<ProductDTO> getProductsByCategory(Long categoryId) {
         List<Product> products = productRepository.findByCategory_CategoryId(categoryId);
         return convertToProductDTO(products);
+    }
+
+    /*
+    상품 상세 보기
+    */
+    public ResponseEntity<ProductInfoDTO> getProductInfo(Long productId) {
+        return productRepository.findById(productId)
+                .map(product -> ResponseEntity.ok(new ProductInfoDTO(product)))
+                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
     }
 
     private List<ProductDTO> convertToProductDTO(List<Product> products) {
