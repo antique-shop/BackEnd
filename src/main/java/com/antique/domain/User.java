@@ -52,6 +52,11 @@ public class User {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<Product> products;
 
+    public void updateNickname(String nickname)
+    {
+        this.nickname = nickname;
+    }
+
     public void updateNicknameAndAddress(String nickname, String address) {
         this.nickname = nickname;
         this.address = address;
