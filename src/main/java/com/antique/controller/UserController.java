@@ -6,6 +6,8 @@ import com.antique.dto.user.UserRequestDTO;
 import com.antique.dto.user.UserResponseDTO;
 import com.antique.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,11 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "회원 정보 입력", description = "사용자의 닉네임과 주소를 설정하는 API입니다.")
+    @Parameters({
+            @Parameter(name = "userId", description = "사용자 ID", required = true),
+            @Parameter(name = "nickname", description = "사용자 닉네임", required = true),
+            @Parameter(name = "address", description = "사용자 주소", required = true)
+    })
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> updateUserDetails(@RequestBody UserRequestDTO userRequestDto) {
         Long userId = userRequestDto.getUserId();
@@ -37,6 +44,10 @@ public class UserController {
     }
 
     @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 변경하는 API입니다.")
+    @Parameters({
+            @Parameter(name = "userId", description = "사용자 ID", required = true),
+            @Parameter(name = "nickname", description = "변경할 닉네임", required = true)
+    })
     @PostMapping("/updateNickname")
     public ResponseEntity<UserResponseDTO> updateUserNickname(@RequestBody UpdateNicknameDTO updateNicknameDTO) {
         Long userId = updateNicknameDTO.getUserId();
@@ -56,6 +67,10 @@ public class UserController {
     }
 
     @Operation(summary = "주소 변경", description = "사용자의 주소를 변경하는 API입니다.")
+    @Parameters({
+            @Parameter(name = "userId", description = "사용자 ID", required = true),
+            @Parameter(name = "address", description = "변경할 주소", required = true)
+    })
     @PostMapping("/updateAddress")
     public ResponseEntity<UserResponseDTO> updateUserAddress(@RequestBody UpdateAddressDTO updateAddressDTO) {
         Long userId = updateAddressDTO.getUserId();
