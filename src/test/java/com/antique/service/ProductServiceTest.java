@@ -1,13 +1,18 @@
 package com.antique.service;
 
+import com.antique.domain.Category;
 import com.antique.domain.Product;
+import com.antique.domain.User;
 import com.antique.dto.ProductDTO;
+import com.antique.dto.ProductInfoDTO;
+import com.antique.exception.product.ProductNotFoundException;
 import com.antique.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,10 +34,23 @@ class ProductServiceTest {
     * 따라서, Product 객체를 생성하기 위해 Product 클래스의 서브 클래스를 만들었음.
     * */
     private static class TestProduct extends Product {
-        public TestProduct(Long productId, String name, String description, int price, String status, String image, String sellerNickname) {
-            super(productId, name, description, price, status, image, sellerNickname);
+        public TestProduct(Long productId, String name, String description, int price, String status, List<String> images, String sellerNickname) {
+            super(productId, name, description, price, status, images, sellerNickname);
         }
     }
+
+    private static class TestProduct2 extends Product {
+        public TestProduct2(Long productId, String name, String description, int price, List<String> images, String sellerNickname, Category category, float sellerRating, User seller) {
+            super(productId, name, description, category, price, images, sellerNickname, sellerRating, seller);
+        }
+    }
+
+    private static class TestCategory extends Category {
+        public TestCategory(CategoryName categoryName) {
+            super(categoryName);
+        }
+    }
+
 
     /*
     * [ 상품 전체 목록 조회 ]
@@ -42,8 +60,9 @@ class ProductServiceTest {
     public void testGetAllProducts() {
 
         // given
-        Product product1 = new TestProduct(1L, "Product 1", "Description 1", 100, "AVAILABLE", "없음", "nickname1");
-        Product product2 = new TestProduct(2L, "Product 2", "Description 2", 200, "SOLD_OUT", "없음", "nickname1");
+        List<String> productImages = Arrays.asList("image1.jpg", "image2.jpg");
+        Product product1 = new TestProduct(1L, "Product 1", "Description 1", 100, "AVAILABLE", productImages, "nickname1");
+        Product product2 = new TestProduct(2L, "Product 2", "Description 2", 200, "SOLD_OUT", productImages, "nickname1");
         when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
 
         // when
@@ -79,8 +98,9 @@ class ProductServiceTest {
     public void testGetProductsByCategory() {
         // Given
         Long categoryId = 1L;
-        Product product1 = new Product(1L, "Product 1", "Description 1", 100, "AVAILABLE", "image1.jpg", "nickname1");
-        Product product2 = new Product(2L, "Product 2", "Description 2", 200, "SOLD_OUT", "image2.jpg", "nickname2");
+        List<String> productImages = Arrays.asList("image1.jpg", "image2.jpg");
+        Product product1 = new Product(1L, "Product 1", "Description 1", 100, "AVAILABLE", productImages, "nickname1");
+        Product product2 = new Product(2L, "Product 2", "Description 2", 200, "SOLD_OUT", productImages, "nickname2");
 
         when(productRepository.findByCategory_CategoryId(categoryId)).thenReturn(Arrays.asList(product1, product2));
 
@@ -95,4 +115,54 @@ class ProductServiceTest {
         assertEquals("nickname1", result.get(0).getSellerNickName());
         assertEquals("nickname2", result.get(1).getSellerNickName());
     }
+
+    /*
+     * [ 상품 상세 정보 조회 ]
+     * - 상품이 존재하는 경우
+     * - 상품이 존재하지 않는 경우
+     * */
+    @Test
+    public void testGetProductInfo() {
+        // Given
+        Long productId = 1L;
+
+        // 상품 이미지
+        List<String> productImages = Arrays.asList("image1.jpg", "image2.jpg");
+
+        // 상품 카테고리
+        TestCategory category = new TestCategory(Category.CategoryName.TOPS);
+        category.setCategoryName(Category.CategoryName.TOPS);
+
+        // User 객체 생성
+        User seller = User.createUser("nickname1");
+        seller.setNickname("nickname1");
+
+        Product product = new TestProduct2(productId, "Product 1", "Description 1", 100, productImages, "nickname1", category, 4, seller);
+
+        // 상품이 존재하는 경우
+        when(productRepository.findById(productId)).thenReturn(java.util.Optional.of(product));
+
+        // When
+        ResponseEntity<ProductInfoDTO> response = productService.getProductInfo(productId);
+
+        // Then
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCodeValue());
+        ProductInfoDTO productInfo = response.getBody();
+        assertNotNull(productInfo);
+        assertEquals(productId, productInfo.getProductId());
+        assertEquals("Product 1", productInfo.getProductName());
+        assertEquals("Description 1", productInfo.getDescription());
+        assertEquals(productImages, productInfo.getProductImages());
+        assertEquals(100, productInfo.getPrice());
+        assertEquals("nickname1", productInfo.getSellerNickname());
+        assertEquals(4.0, productInfo.getSellerRating());
+
+        // 상품이 존재하지 않는 경우
+        when(productRepository.findById(productId)).thenReturn(java.util.Optional.empty());
+
+        // When & Then
+        assertThrows(ProductNotFoundException.class, () -> productService.getProductInfo(productId));
+    }
+
 }
