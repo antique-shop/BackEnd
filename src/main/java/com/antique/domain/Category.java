@@ -25,6 +25,10 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products;
 
+    public Category(CategoryName categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public enum CategoryName {
         TOPS, BOTTOMS, OUTERWEAR, SHOES, OTHERS
     }
