@@ -67,5 +67,11 @@ public class User {
         this.nickname = nickname;
         this.address = address;
     }
+
+    public static User createUser(String nickname) {
+        User user = new User();
+        user.setNickname(nickname);
+        return user;
+    }
 }
 
