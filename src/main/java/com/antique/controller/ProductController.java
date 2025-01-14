@@ -48,9 +48,10 @@ public class ProductController {
     상품 상세 보기
     */
     @Operation(summary = "상품 상세 보기", description = "상품의 상세 정보를 조회하는 API 입니다.")
-    @Parameters({@Parameter(name = "productId", description = "상품 ID, query string")})
     @GetMapping("/getProductInfo")
-    public ResponseEntity<ProductInfoDTO> getProductInfo(@RequestParam Long productId) {
+    public ResponseEntity<ProductInfoDTO> getProductInfo(
+            @Parameter(name = "productId", description = "상품 ID, query string")
+            @RequestParam Long productId) {
         return productService.getProductInfo(productId);
     }
 }
