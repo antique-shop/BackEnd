@@ -1,7 +1,7 @@
 package com.antique.service;
 
 import com.antique.domain.User;
-import com.antique.dto.UserRequestDTO;
+import com.antique.dto.user.UserRequestDTO;
 import com.antique.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -98,5 +98,29 @@ class UserServiceTest {
 
         // 사용자 필드가 업데이트되었는지 확인
         assertThat(user.getNickname()).isEqualTo(updatedNickname);
+    }
+
+    @Test
+    void testUpdateUserAddress() {
+        // Given: 기존 사용자 Mock 데이터
+        User user = User.builder()
+                .userId(1L)
+                .email("test@example.com")
+                .address("old address")
+                .build();
+
+        String updatedAddress = "new address";
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        // When: UserService 호출
+        Long updatedUserId = userService.updateUserAddress(1L, updatedAddress);
+
+        // Then: 검증
+        assertThat(updatedUserId).isEqualTo(1L);
+
+        // 사용자 필드가 업데이트되었는지 확인
+        assertThat(user.getAddress()).isEqualTo(updatedAddress);
     }
 }

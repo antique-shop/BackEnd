@@ -57,6 +57,9 @@ public class User {
         this.nickname = nickname;
     }
 
+    public void updateAddress(String address)
+    { this.address = address; }
+
     public void updateNicknameAndAddress(String nickname, String address) {
         this.nickname = nickname;
         this.address = address;

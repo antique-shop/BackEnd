@@ -1,6 +1,6 @@
 package com.antique.exception;
 
-import com.antique.dto.UserResponseDTO;
+import com.antique.dto.user.UserResponseDTO;
 import com.antique.exception.user.UserErrorCode;
 import com.antique.exception.user.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
