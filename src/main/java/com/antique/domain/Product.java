@@ -84,7 +84,7 @@ public class Product {
         AVAILABLE, SOLD_OUT, DELETED
     }
 
-    public Product(Long productId, String name, String description, int price, String status, List<String> images, String sellerNickname) {
+    public Product(Long productId, String name, String description, int price, String status, List<String> images, String sellerNickname, User seller) {
         this.productId = productId;
         this.name = name;
         this.description = description;
@@ -93,7 +93,7 @@ public class Product {
         this.productImages = images.stream()
                 .map(imageUrl -> new ProductImage(null, this, imageUrl)) // ProductImage 생성자에 맞게 수정
                 .collect(Collectors.toList());
-        this.seller = new User();
+        this.seller = seller;
         this.seller.setNickname(sellerNickname);
         this.category = new Category();
         this.isDeleted = false;
