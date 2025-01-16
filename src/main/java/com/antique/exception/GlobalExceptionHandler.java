@@ -4,6 +4,8 @@ package com.antique.exception;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.dto.user.UserResponseDTO;
+import com.antique.exception.review.ReviewErrorCode;
+import com.antique.exception.review.ReviewNotFoundException;
 import com.antique.exception.user.UserErrorCode;
 import com.antique.exception.user.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<UserResponseDTO> handleProductNotFoundException(ProductNotFoundException ex) {
         ProductErrorCode errorCode = ex.getErrorCode();
+        UserResponseDTO responseDto = new UserResponseDTO(
+        UserResponseDTO responseDto = new UserResponseDTO(
+                null,
+                errorCode.getMessage(),
+                errorCode.getStatus().value()
+        );
+        return ResponseEntity.status(errorCode.getStatus()).body(responseDto);
+    }
+
+    // ProductNotFoundException 처리
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<UserResponseDTO> handleReviewNotFoundException(ReviewNotFoundException ex) {
+        ReviewErrorCode errorCode = ex.getErrorCode();
         UserResponseDTO responseDto = new UserResponseDTO(
                 null,
                 errorCode.getMessage(),
