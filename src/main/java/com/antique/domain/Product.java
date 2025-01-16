@@ -90,13 +90,17 @@ public class Product {
         this.description = description;
         this.price = price;
         this.status = Status.valueOf(status);
-        this.productImages = images.stream()
-                .map(imageUrl -> new ProductImage(null, this, imageUrl)) // ProductImage 생성자에 맞게 수정
-                .collect(Collectors.toList());
+        this.productImages = mapProductImages(images);
         this.seller = seller;
         this.seller.setNickname(sellerNickname);
         this.category = new Category();
         this.isDeleted = false;
+    }
+
+    private List mapProductImages(List<String> images) {
+        return images.stream()
+                .map(imageUrl -> new ProductImage(null, this, imageUrl))
+                .collect(Collectors.toList());
     }
 }
 
