@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -64,22 +65,42 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> productImages;
 
+    public Product(Long productId, String name, String description, Category category, int price, List<String> images, String sellerNickname, float sellerRating, User seller) {
+        this.productId = productId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.productImages = images.stream()
+                .map(imageUrl -> new ProductImage(null, this, imageUrl)) // ProductImage 생성자에 맞게 수정
+                .collect(Collectors.toList());
+        this.seller = seller;
+        this.seller.setNickname(sellerNickname);
+        this.seller.setRating(sellerRating);
+    }
+
     // Enum 정의
     public enum Status {
         AVAILABLE, SOLD_OUT, DELETED
     }
 
-    public Product(Long productId, String name, String description, int price, String status, String image, String sellerNickname) {
+    public Product(Long productId, String name, String description, int price, String status, List<String> images, String sellerNickname, User seller) {
         this.productId = productId;
         this.name = name;
         this.description = description;
         this.price = price;
         this.status = Status.valueOf(status);
-        this.productImage = image;
-        this.seller = new User();
+        this.productImages = mapProductImages(images);
+        this.seller = seller;
         this.seller.setNickname(sellerNickname);
         this.category = new Category();
         this.isDeleted = false;
+    }
+
+    private List mapProductImages(List<String> images) {
+        return images.stream()
+                .map(imageUrl -> new ProductImage(null, this, imageUrl))
+                .collect(Collectors.toList());
     }
 }
 
