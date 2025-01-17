@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 @Table(name = "product")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class Product {
 
     @Id
