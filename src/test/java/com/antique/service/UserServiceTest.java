@@ -3,6 +3,7 @@ package com.antique.service;
 import com.antique.domain.User;
 import com.antique.dto.user.UserRequestDTO;
 import com.antique.repository.UserRepository;
+import com.antique.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,12 +30,12 @@ class UserServiceTest {
     @Test
     void testUpdateUserDetails() {
         // Given: 기존 사용자 Mock 데이터
-        User user = User.builder()
-                .userId(1L)
-                .email("test@example.com")
-                .nickname("OldNickname")
-                .address("Old Address")
-                .build();
+        User user = User.createUser(
+                1L,
+                "test@example.com",
+                "OldNickname",
+                "Old Address"
+        );
 
         UserRequestDTO userRequestDto = UserRequestDTO.builder()
                 .nickname("UpdatedNickname")
@@ -79,11 +80,12 @@ class UserServiceTest {
     @Test
     void testUpdateUserNickname() {
         // Given: 기존 사용자 Mock 데이터
-        User user = User.builder()
-                .userId(1L)
-                .email("test@example.com")
-                .nickname("OldNickname")
-                .build();
+        User user = User.createUser(
+                1L,
+                "test@example.com",
+                "OldNickname",
+                "Old Address"
+        );
 
         String updatedNickname = "NewNickname";
 
@@ -103,11 +105,12 @@ class UserServiceTest {
     @Test
     void testUpdateUserAddress() {
         // Given: 기존 사용자 Mock 데이터
-        User user = User.builder()
-                .userId(1L)
-                .email("test@example.com")
-                .address("old address")
-                .build();
+        User user = User.createUser(
+                1L,
+                "test@example.com",
+                "OldNickname",
+                "Old Address"
+        );
 
         String updatedAddress = "new address";
 

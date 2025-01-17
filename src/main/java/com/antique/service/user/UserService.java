@@ -1,4 +1,4 @@
-package com.antique.service;
+package com.antique.service.user;
 
 import com.antique.domain.User;
 import com.antique.dto.user.UserRequestDTO;

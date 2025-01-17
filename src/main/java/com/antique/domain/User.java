@@ -65,10 +65,19 @@ public class User {
         this.address = address;
     }
 
-    public static User createUser(String nickname) {
+/*    public static User createUser(String nickname) {
         User user = new User();
         user.setNickname(nickname);
         return user;
+    }*/
+
+    public static User createUser(Long userId, String email, String nickname, String address) {
+        return User.builder()
+                .userId(userId)
+                .email(email)
+                .nickname(nickname)
+                .address(address)
+                .build();
     }
 }
 
