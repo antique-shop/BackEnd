@@ -1,9 +1,11 @@
 package com.antique.service.user;
 
+import com.antique.TestDataFactory;
 import com.antique.domain.Category;
 import com.antique.domain.Product;
 import com.antique.domain.User;
 import com.antique.dto.product.ProductRequestDTO;
+import com.antique.exception.category.CategoryNotFoundException;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.CategoryRepository;
 import com.antique.repository.ProductRepository;
@@ -41,7 +43,7 @@ class UserProductServiceTest {
     void testRegisterProduct_Success() {
         // Given: Mock 데이터 설정
         Long sellerUserId = 1L;
-        User seller = User.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
+        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
         Category category = new Category(Category.CategoryName.TOPS);
 
         ProductRequestDTO request = ProductRequestDTO.builder()
@@ -104,7 +106,7 @@ class UserProductServiceTest {
     void testRegisterProduct_CategoryNotFound() {
         // Given: 존재하지 않는 카테고리 ID
         Long sellerUserId = 1L;
-        User seller = User.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
+        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
 
         ProductRequestDTO request = ProductRequestDTO.builder()
                 .userId(sellerUserId)
@@ -119,7 +121,7 @@ class UserProductServiceTest {
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(IllegalArgumentException.class, () -> userProductService.registerProduct(request));
+        assertThrows(CategoryNotFoundException.class, () -> userProductService.registerProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 }

@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -48,7 +50,9 @@ public class UserProductService {
                 .build();
 
         // 4. 이미지 리스트 처리 및 설정
-        List<ProductImage> productImages = request.getImages().stream()
+        List<ProductImage> productImages = Optional.ofNullable(request.getImages())
+                .orElse(Collections.emptyList()) // null인 경우 빈 리스트 반환
+                .stream()
                 .map(imageUrl -> ProductImage.builder()
                         .product(product)
                         .productImageUrl(imageUrl)
