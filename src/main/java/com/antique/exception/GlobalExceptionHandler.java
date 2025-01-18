@@ -27,9 +27,9 @@ public class GlobalExceptionHandler {
 
     // ProductNotFoundException 처리
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<UserResponseDto> handleProductNotFoundException(ProductNotFoundException ex) {
+    public ResponseEntity<UserResponseDTO> handleProductNotFoundException(ProductNotFoundException ex) {
         ProductErrorCode errorCode = ex.getErrorCode();
-        UserResponseDto responseDto = new UserResponseDto(
+        UserResponseDTO responseDto = new UserResponseDTO(
                 null,
                 errorCode.getMessage(),
                 errorCode.getStatus().value()

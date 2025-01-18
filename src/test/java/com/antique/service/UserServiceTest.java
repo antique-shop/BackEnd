@@ -1,7 +1,9 @@
 package com.antique.service;
 
+import com.antique.TestDataFactory;
 import com.antique.domain.User;
 import com.antique.dto.user.UserRequestDTO;
+import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,17 +31,8 @@ class UserServiceTest {
     @Test
     void testUpdateUserDetails() {
         // Given: 기존 사용자 Mock 데이터
-        User user = User.builder()
-                .userId(1L)
-                .email("test@example.com")
-                .nickname("OldNickname")
-                .address("Old Address")
-                .build();
-
-        UserRequestDTO userRequestDto = UserRequestDTO.builder()
-                .nickname("UpdatedNickname")
-                .address("Updated Address")
-                .build();
+        User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
+        UserRequestDTO userRequestDto = TestDataFactory.createUserRequestDTO("UpdatedNickname", "Updated Address");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
@@ -60,30 +53,23 @@ class UserServiceTest {
         // Given: 존재하지 않는 userId 설정
         Long notExistUserId = 999L;
 
-        UserRequestDTO userRequestDto = UserRequestDTO.builder()
-                .nickname("NewNickname")
-                .address("New Address")
-                .build();
+        UserRequestDTO userRequestDto = TestDataFactory.createUserRequestDTO("UpdatedNickname", "Updated Address");
 
         when(userRepository.findById(notExistUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 () -> userService.updateUserDetails(notExistUserId, userRequestDto)
         );
 
-        assertEquals("999번 userid의 사용자를 찾을 수 없습니다: ", exception.getMessage());
+        assertEquals("존재하지 않는 사용자입니다.", exception.getMessage());
     }
 
     @Test
     void testUpdateUserNickname() {
         // Given: 기존 사용자 Mock 데이터
-        User user = User.builder()
-                .userId(1L)
-                .email("test@example.com")
-                .nickname("OldNickname")
-                .build();
+        User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
 
         String updatedNickname = "NewNickname";
 
@@ -103,11 +89,7 @@ class UserServiceTest {
     @Test
     void testUpdateUserAddress() {
         // Given: 기존 사용자 Mock 데이터
-        User user = User.builder()
-                .userId(1L)
-                .email("test@example.com")
-                .address("old address")
-                .build();
+        User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
 
         String updatedAddress = "new address";
 
