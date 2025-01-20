@@ -1,7 +1,14 @@
 package com.antique;
 
+import com.antique.domain.Category;
+import com.antique.domain.Product;
+import com.antique.domain.ProductImage;
 import com.antique.domain.User;
+import com.antique.dto.product.ProductRequestDTO;
+import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.dto.user.UserRequestDTO;
+
+import java.util.List;
 
 
 public class TestDataFactory {
@@ -15,12 +22,7 @@ public class TestDataFactory {
     }
 
     public static User createUserWithDefault(Long userId) {
-        return User.builder()
-                .userId(userId)
-                .email("default@example.com")
-                .nickname("defaultNickname")
-                .address("defaultAddress")
-                .build();
+        return createUser(userId, "default@example.com", "defaultNickname", "defaultAddress");
     }
 
     public static UserRequestDTO createUserRequestDTO(String nickname, String address) {
@@ -31,9 +33,91 @@ public class TestDataFactory {
     }
 
     public static UserRequestDTO createUserRequestDTOWithDefaults() {
-        return UserRequestDTO.builder()
-                .nickname("defaultNickname")
-                .address("defaultAddress")
+        return createUserRequestDTO("defaultNickname", "defaultAddress");
+    }
+
+    // ProductRequestDTO 생성
+    public static ProductRequestDTO createProductRequestDTO(Long userId, String name, String description, int price, Long categoryId, List<String> images) {
+        return ProductRequestDTO.builder()
+                .userId(userId)
+                .name(name)
+                .description(description)
+                .price(price)
+                .categoryId(categoryId)
+                .images(images)
+                .build();
+    }
+
+
+
+    public static ProductRequestDTO createProductRequestDTOWithDefaults(Long userId, Long categoryId) {
+        return createProductRequestDTO(
+                userId,
+                "Default Product Name",
+                "Default Description",
+                100000,
+                categoryId,
+                List.of("https://example.com/default-image1.jpg", "https://example.com/default-image2.jpg")
+        );
+    }
+
+    // ProductUpdateDTO 생성
+    public static ProductUpdateDTO createProductUpdateDTO(Long productId, Long userId, Long categoryId, String name, String description, int price, List<String> images) {
+        return ProductUpdateDTO.builder()
+                .productId(productId)
+                .userId(userId)
+                .categoryId(categoryId)
+                .name(name)
+                .description(description)
+                .price(price)
+                .images(images)
+                .build();
+    }
+
+    public static ProductUpdateDTO createProductUpdateDTOWithDefaults(Long productId, Long userId, Long categoryId) {
+        return createProductUpdateDTO(
+                productId,
+                userId,
+                categoryId,
+                "Default Product Name",
+                "Default Description",
+                100000,
+                List.of("https://example.com/default-image1.jpg", "https://example.com/default-image2.jpg")
+        );
+    }
+
+    // Product 생성
+    public static Product createProduct(Long productId, String name, String description, int price) {
+        return Product.builder()
+                .productId(productId)
+                .name(name)
+                .description(description)
+                .price(price)
+                .build();
+    }
+
+    public static Product createProductWithDefaults(Long productId, User seller, Category category) {
+        List<ProductImage> productImages = List.of(
+                ProductImage.builder().productImageUrl("https://example.com/default-image1.jpg").build(),
+                ProductImage.builder().productImageUrl("https://example.com/default-image2.jpg").build()
+        );
+
+        return Product.builder()
+                .productId(productId)
+                .name("Default Product Name")
+                .description("Default Description")
+                .price(100000)
+                .category(category)
+                .seller(seller)
+                .productImages(productImages)
+                .build();
+    }
+
+    // Category 생성
+    public static Category createCategory(Long categoryId, Category.CategoryName categoryName) {
+        return Category.builder()
+                .categoryId(categoryId)
+                .categoryName(categoryName)
                 .build();
     }
 }

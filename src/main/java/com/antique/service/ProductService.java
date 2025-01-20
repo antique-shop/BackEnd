@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.antique.dto.product.ProductUpdateDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +71,26 @@ public class ProductService {
         // 5. productId만 반환
         return savedProduct.getProductId();
     }
+    
+    @Transactional
+    public Long updateProduct(ProductUpdateDTO request) {
+        // 1. 상품 확인
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        // 2. 판매자 확인
+        User seller = userRepository.findById(request.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+        // 3. 카테고리 확인
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(CategoryNotFoundException::new);
+        // 4. Product 엔티티의 수정 메서드 호출
+        product.updateFromDTO(request, category, seller);
 
+        productRepository.save(product);
+
+        return product.getProductId();
+    }
+    
     /*
     상품 전체 목록 조회
     */

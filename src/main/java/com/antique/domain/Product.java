@@ -1,12 +1,16 @@
 package com.antique.domain;
 
+import com.antique.dto.product.ProductUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
@@ -14,7 +18,7 @@ import java.util.stream.Collectors;
 @Table(name = "product")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 public class Product {
 
@@ -64,8 +68,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ProductImage> productImages;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProductImage> productImages = new ArrayList<>();
 
     public Product(Long productId, String name, String description, Category category, int price, List<String> images, String sellerNickname, float sellerRating, User seller) {
         this.productId = productId;
@@ -83,7 +88,7 @@ public class Product {
 
     // Enum 정의
     public enum Status {
-        AVAILABLE, SOLD_OUT, DELETED
+        AVAILABLE, SOLD_OUT
     }
 
     public Product(Long productId, String name, String description, int price, String status, List<String> images, String sellerNickname, User seller) {
@@ -103,6 +108,28 @@ public class Product {
         return images.stream()
                 .map(imageUrl -> new ProductImage(null, this, imageUrl))
                 .collect(Collectors.toList());
+    }
+
+    // DTO 기반 업데이트 메서드
+    public void updateFromDTO(ProductUpdateDTO request, Category category, User seller) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.price = request.getPrice();
+        this.category = category;
+        this.seller = seller;
+
+        // 이미지 리스트 처리 (기존 이미지 삭제 후 새로 추가)
+        this.productImages.clear(); // 기존 이미지 제거
+        if (request.getImages() != null) {
+            for (String imageUrl : request.getImages()) {
+                this.productImages.add(
+                        ProductImage.builder()
+                                .product(this)
+                                .productImageUrl(imageUrl)
+                                .build()
+                );
+            }
+        }
     }
 }
 
