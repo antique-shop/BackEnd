@@ -62,6 +62,7 @@ class UserProductServiceTest {
 
         // When: 서비스 호출
         Long savedProductId = productService.registerProduct(request);
+        Long productId = productService.registerProduct(request);
 
         // Then: 결과 검증
         assertThat(productId).isNotNull();

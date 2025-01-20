@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.antique.dto.product.ProductUpdateDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -101,7 +102,7 @@ public class ProductService {
         // 3. 저장
         productRepository.save(product);
     }
-
+    
     /*
     상품 전체 목록 조회
     */
