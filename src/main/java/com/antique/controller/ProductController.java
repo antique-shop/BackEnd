@@ -24,12 +24,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final UserProductService userProductService;
 
     @Operation(summary = "상품 등록", description = "사용자가 새로운 상품을 등록하는 API입니다.")
     @PostMapping("/register")
     public ResponseEntity<ProductResponseDTO> registerProduct(@RequestBody ProductRequestDTO request) {
-        Long productId = userProductService.registerProduct(request);
+        Long productId = productService.registerProduct(request);
         // 응답 DTO 생성
         ProductResponseDTO response = new ProductResponseDTO(
                 productId,
