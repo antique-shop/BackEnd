@@ -2,17 +2,16 @@ package com.antique.controller;
 
 import com.antique.dto.ProductDTO;
 import com.antique.dto.ProductInfoDTO;
+import com.antique.dto.product.ProductRequestDTO;
+import com.antique.dto.product.ProductResponseDTO;
 import com.antique.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +22,21 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+
+    @Operation(summary = "상품 등록", description = "사용자가 새로운 상품을 등록하는 API입니다.")
+    @PostMapping("/register")
+    public ResponseEntity<ProductResponseDTO> registerProduct(@RequestBody ProductRequestDTO request) {
+        Long productId = productService.registerProduct(request);
+        // 응답 DTO 생성
+        ProductResponseDTO response = new ProductResponseDTO(
+                productId,
+                "상품이 성공적으로 등록되었습니다.",
+                HttpStatus.OK.value() // HTTP 상태 코드
+        );
+
+        // 응답 반환
+        return ResponseEntity.ok(response);
+    }
 
     /*
     상품 전체 목록 조회
@@ -54,4 +68,5 @@ public class ProductController {
             @RequestParam Long productId) {
         return productService.getProductInfo(productId);
     }
+
 }

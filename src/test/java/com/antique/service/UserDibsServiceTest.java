@@ -1,5 +1,6 @@
 package com.antique.service;
 
+import com.antique.domain.Category;
 import com.antique.domain.Dibs;
 import com.antique.domain.Product;
 import com.antique.domain.User;
@@ -7,13 +8,13 @@ import com.antique.dto.ProductDTO;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.DibsRepository;
 import com.antique.repository.UserRepository;
+import com.antique.service.user.UserDibsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ class UserDibsServiceTest {
 
     @Mock
     private DibsRepository dibsRepository;
+
+    Category category = new Category(Category.CategoryName.TOPS);
 
     @Test
     void testGetUserDibsProducts_Success() {
@@ -55,10 +58,12 @@ class UserDibsServiceTest {
                 101L,
                 "Product 1",
                 "Description 1",
+                category, // 카테고리 추가
                 1000, // int 타입 가격
-                "AVAILABLE", // 문자열 타입 상태
-                "image1.jpg",
-                "Seller1" // 판매자 닉네임
+                List.of("image1.jpg"), // 이미지 리스트
+                "Seller1", // 판매자 닉네임
+                4.5f, // 판매자 평점
+                seller1 // 판매자
         );
         product1.setSeller(seller1);
 
@@ -66,10 +71,12 @@ class UserDibsServiceTest {
                 102L,
                 "Product 2",
                 "Description 2",
+                category, // 카테고리 추가
                 2000, // int 타입 가격
-                "AVAILABLE", // 문자열 타입 상태
-                "image2.jpg",
-                "Seller2" // 판매자 닉네임
+                List.of("image2.jpg"), // 이미지 리스트
+                "Seller2", // 판매자 닉네임
+                4.7f, // 판매자 평점
+                seller2 // 판매자
         );
         product2.setSeller(seller2);
 

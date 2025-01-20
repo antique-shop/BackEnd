@@ -5,6 +5,7 @@ import com.antique.domain.User;
 import com.antique.dto.user.UserRequestDTO;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.UserRepository;
+import com.antique.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ class UserServiceTest {
 
     @Test
     void testUpdateUserDetails() {
+
         // Given: 기존 사용자 Mock 데이터
         User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
         UserRequestDTO userRequestDto = TestDataFactory.createUserRequestDTO("UpdatedNickname", "Updated Address");
