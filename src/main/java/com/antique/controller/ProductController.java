@@ -54,6 +54,20 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "상품 삭제", description = "등록된 상품을 삭제하는 API입니다.")
+    @DeleteMapping("/delete")
+    public ResponseEntity<ProductResponseDTO> deleteProduct(
+            @Parameter(description = "삭제할 상품의 ID", required = true)
+            @RequestParam Long productId) {
+        ProductResponseDTO response = new ProductResponseDTO(
+                productId,
+                "상품이 성공적으로 삭제되었습니다.",
+                HttpStatus.OK.value()
+        );
+        productService.deleteProduct(productId);
+        return ResponseEntity.ok(response);
+    }
+
     /*
     상품 전체 목록 조회
      */

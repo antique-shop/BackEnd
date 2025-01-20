@@ -205,4 +205,19 @@ class UserProductServiceTest {
         assertThrows(CategoryNotFoundException.class, () -> productService.updateProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
+
+    @Test
+    void testDeleteProduct_Success() {
+        // Given: Mock 데이터 설정
+        Long productId = 1L;
+        Product product = TestDataFactory.createProduct(productId, "Test Product", "Test Description", 1000);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        // When: 삭제 메서드 호출
+       productService.deleteProduct(productId);
+
+        // Then: 검증
+        assertThat(product.getIsDeleted()).isTrue(); // isDeleted 필드가 true로 설정되었는지 확인
+        verify(productRepository, times(1)).save(product); // 저장 호출 검증
+    }
 }

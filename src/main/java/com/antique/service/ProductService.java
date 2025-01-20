@@ -7,6 +7,7 @@ import com.antique.domain.User;
 import com.antique.dto.ProductDTO;
 import com.antique.dto.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
+import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.exception.category.CategoryNotFoundException;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
@@ -71,7 +72,7 @@ public class ProductService {
         // 5. productId만 반환
         return savedProduct.getProductId();
     }
-    
+
     @Transactional
     public Long updateProduct(ProductUpdateDTO request) {
         // 1. 상품 확인
@@ -89,6 +90,17 @@ public class ProductService {
         productRepository.save(product);
 
         return product.getProductId();
+    }
+
+    @Transactional
+    public void deleteProduct(Long productId) {
+        // 1. 상품 확인
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        // 2. 상품 삭제 처리 (소프트 삭제: isDeleted 필드 업데이트)
+        product.setIsDeleted(true);
+        // 3. 저장
+        productRepository.save(product);
     }
     
     /*
