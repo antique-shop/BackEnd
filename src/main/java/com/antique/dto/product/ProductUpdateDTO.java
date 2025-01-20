@@ -13,7 +13,7 @@ public class ProductUpdateDTO {
     @Schema(description = "user id", example = "1", required = true)
     private Long userId;
 
-    @Schema(description = "product id", example = "1", required = true)
+    @Schema(description = "product id", example = "101", required = true)
     private Long productId;
 
     @Schema(description = "상품명", example = "Vintage Pants", required = true)

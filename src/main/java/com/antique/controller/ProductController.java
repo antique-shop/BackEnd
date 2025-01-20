@@ -4,6 +4,7 @@ import com.antique.dto.ProductDTO;
 import com.antique.dto.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductResponseDTO;
+import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.service.ProductService;
 import com.antique.service.user.UserProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +39,21 @@ public class ProductController {
         );
 
         // 응답 반환
+        return ResponseEntity.ok(response);
+    }
+
+    /*
+    상품 수정
+    */
+    @Operation(summary = "상품 수정", description = "사용자가 상품 정보를 수정하는 API입니다.")
+    @PostMapping("/update")
+    public ResponseEntity<ProductResponseDTO> updateProduct(@RequestBody ProductUpdateDTO request) {
+        Long updatedProductId = userProductService.updateProduct(request);
+        ProductResponseDTO response = new ProductResponseDTO(
+                updatedProductId,
+                "상품이 성공적으로 수정되었습니다.",
+                HttpStatus.OK.value()
+        );
         return ResponseEntity.ok(response);
     }
 

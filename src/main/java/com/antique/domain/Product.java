@@ -88,7 +88,7 @@ public class Product {
 
     // Enum 정의
     public enum Status {
-        AVAILABLE, SOLD_OUT, DELETED
+        AVAILABLE, SOLD_OUT
     }
 
     public Product(Long productId, String name, String description, int price, String status, List<String> images, String sellerNickname, User seller) {
