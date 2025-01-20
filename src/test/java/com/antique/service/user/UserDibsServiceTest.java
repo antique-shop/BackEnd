@@ -1,4 +1,4 @@
-package com.antique.service;
+package com.antique.service.user;
 
 import com.antique.domain.Category;
 import com.antique.domain.Dibs;
@@ -8,7 +8,6 @@ import com.antique.dto.ProductDTO;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.DibsRepository;
 import com.antique.repository.UserRepository;
-import com.antique.service.user.UserDibsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

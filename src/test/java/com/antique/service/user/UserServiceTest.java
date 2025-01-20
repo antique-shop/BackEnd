@@ -1,11 +1,10 @@
-package com.antique.service;
+package com.antique.service.user;
 
 import com.antique.TestDataFactory;
 import com.antique.domain.User;
 import com.antique.dto.user.UserRequestDTO;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.UserRepository;
-import com.antique.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
