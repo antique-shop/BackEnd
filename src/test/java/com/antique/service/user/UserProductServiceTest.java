@@ -14,6 +14,7 @@ import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.CategoryRepository;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.UserRepository;
+import com.antique.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.*;
 class UserProductServiceTest {
 
     @InjectMocks
-    private UserProductService userProductService;
+    private ProductService productService;
 
     @Mock
     private ProductRepository productRepository;
@@ -60,7 +61,7 @@ class UserProductServiceTest {
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         // When: 서비스 호출
-        Long savedProductId = userProductService.registerProduct(request);
+        Long savedProductId = productService.registerProduct(request);
 
         // Then: 결과 검증
         assertThat(productId).isNotNull();
@@ -93,7 +94,7 @@ class UserProductServiceTest {
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(UserNotFoundException.class, () -> userProductService.registerProduct(request));
+        assertThrows(UserNotFoundException.class, () -> productService.registerProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -110,7 +111,7 @@ class UserProductServiceTest {
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(CategoryNotFoundException.class, () -> userProductService.registerProduct(request));
+        assertThrows(CategoryNotFoundException.class, () -> productService.registerProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -132,7 +133,7 @@ class UserProductServiceTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
 
         // When: 서비스 호출
-        Long updatedProductId = userProductService.updateProduct(request);
+        Long updatedProductId = productService.updateProduct(request);
 
         // Then: 결과 검증
         assertThat(updatedProductId).isEqualTo(productId);
@@ -163,7 +164,7 @@ class UserProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(ProductNotFoundException.class, () -> userProductService.updateProduct(request));
+        assertThrows(ProductNotFoundException.class, () -> productService.updateProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -181,7 +182,7 @@ class UserProductServiceTest {
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(UserNotFoundException.class, () -> userProductService.updateProduct(request));
+        assertThrows(UserNotFoundException.class, () -> productService.updateProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -200,7 +201,7 @@ class UserProductServiceTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(CategoryNotFoundException.class, () -> userProductService.updateProduct(request));
+        assertThrows(CategoryNotFoundException.class, () -> productService.updateProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 }

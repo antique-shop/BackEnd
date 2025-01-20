@@ -6,10 +6,8 @@ import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductResponseDTO;
 import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.service.ProductService;
-import com.antique.service.user.UserProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,12 +23,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final UserProductService userProductService;
 
     @Operation(summary = "상품 등록", description = "사용자가 새로운 상품을 등록하는 API입니다.")
     @PostMapping("/register")
     public ResponseEntity<ProductResponseDTO> registerProduct(@RequestBody ProductRequestDTO request) {
-        Long productId = userProductService.registerProduct(request);
+        Long productId = productService.registerProduct(request);
         // 응답 DTO 생성
         ProductResponseDTO response = new ProductResponseDTO(
                 productId,
@@ -48,7 +45,7 @@ public class ProductController {
     @Operation(summary = "상품 수정", description = "사용자가 상품 정보를 수정하는 API입니다.")
     @PostMapping("/update")
     public ResponseEntity<ProductResponseDTO> updateProduct(@RequestBody ProductUpdateDTO request) {
-        Long updatedProductId = userProductService.updateProduct(request);
+        Long updatedProductId = productService.updateProduct(request);
         ProductResponseDTO response = new ProductResponseDTO(
                 updatedProductId,
                 "상품이 성공적으로 수정되었습니다.",
