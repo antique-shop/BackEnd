@@ -71,7 +71,6 @@ public class ProductService {
         // 5. productId만 반환
         return savedProduct.getProductId();
     }
-
     @Transactional
     public Long updateProduct(ProductUpdateDTO request) {
         // 1. 상품 확인
@@ -90,7 +89,6 @@ public class ProductService {
 
         return product.getProductId();
     }
-
     /*
     상품 전체 목록 조회
     */
