@@ -90,5 +90,15 @@ public class UserProductService {
         return product.getProductId();
     }
 
+    @Transactional
+    public void deleteProduct(Long productId) {
+        // 1. 상품 확인
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        // 2. 상품 삭제 처리 (소프트 삭제: isDeleted 필드 업데이트)
+        product.setIsDeleted(true);
+        // 3. 저장
+        productRepository.save(product);
+    }
 
 }
