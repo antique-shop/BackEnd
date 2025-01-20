@@ -7,7 +7,6 @@ import com.antique.domain.User;
 import com.antique.dto.ProductDTO;
 import com.antique.dto.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
-import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.exception.category.CategoryNotFoundException;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
@@ -19,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.antique.dto.product.ProductUpdateDTO;
 
 import java.util.Collections;
 import java.util.List;
