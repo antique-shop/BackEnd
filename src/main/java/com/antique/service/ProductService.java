@@ -4,8 +4,8 @@ import com.antique.domain.Category;
 import com.antique.domain.Product;
 import com.antique.domain.ProductImage;
 import com.antique.domain.User;
-import com.antique.dto.ProductDTO;
-import com.antique.dto.ProductInfoDTO;
+import com.antique.dto.product.ProductDTO;
+import com.antique.dto.product.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.exception.category.CategoryNotFoundException;
@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import com.antique.dto.product.ProductUpdateDTO;
 
 @Service
 @RequiredArgsConstructor

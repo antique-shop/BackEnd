@@ -1,7 +1,7 @@
 package com.antique.controller;
 
-import com.antique.dto.ProductDTO;
-import com.antique.dto.ProductInfoDTO;
+import com.antique.dto.product.ProductDTO;
+import com.antique.dto.product.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductResponseDTO;
 import com.antique.dto.product.ProductUpdateDTO;
