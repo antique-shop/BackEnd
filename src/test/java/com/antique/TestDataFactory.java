@@ -110,6 +110,7 @@ public class TestDataFactory {
                 .category(category)
                 .seller(seller)
                 .productImages(productImages)
+                .status(Product.Status.AVAILABLE)
                 .build();
     }
 

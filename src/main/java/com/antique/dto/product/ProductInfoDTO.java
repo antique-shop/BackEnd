@@ -1,4 +1,4 @@
-package com.antique.dto;
+package com.antique.dto.product;
 
 import com.antique.domain.Product;
 import io.swagger.v3.oas.annotations.media.Schema;
