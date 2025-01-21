@@ -6,6 +6,7 @@ import com.antique.domain.ProductImage;
 import com.antique.domain.User;
 import com.antique.dto.ProductDTO;
 import com.antique.dto.ProductInfoDTO;
+import com.antique.dto.product.ProductGetDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.exception.category.CategoryNotFoundException;
@@ -101,6 +102,32 @@ public class ProductService {
         product.setIsDeleted(true);
         // 3. 저장
         productRepository.save(product);
+    }
+
+    // user id를 입력받아서 사용자가 판매 중인 물품을 조회하는 코드
+    @Transactional(readOnly = true)
+    public List<ProductGetDTO> getProductByUserId(Long userId) {
+        // 1. 사용자 확인
+        User seller = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        // 2. 판매 중이면서 삭제되지 않은 상품 조회
+        List<Product> availableProducts = productRepository.findBySellerAndStatusAndIsDeleted(
+                seller, Product.Status.AVAILABLE, false);
+
+        // 3. Product 엔티티를 ProductDTO로 변환하여 반환 (이미지 포함)
+        return availableProducts.stream()
+                .map(product -> new ProductGetDTO(
+                        product.getProductId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getStatus().toString(),
+                        product.getProductImages().stream()
+                                .map(ProductImage::getProductImageUrl)
+                                .collect(Collectors.toList()) // 이미지 URL 리스트
+                ))
+                .collect(Collectors.toList());
     }
     
     /*

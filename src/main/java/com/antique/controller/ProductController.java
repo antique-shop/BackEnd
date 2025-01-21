@@ -2,6 +2,7 @@ package com.antique.controller;
 
 import com.antique.dto.ProductDTO;
 import com.antique.dto.ProductInfoDTO;
+import com.antique.dto.product.ProductGetDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductResponseDTO;
 import com.antique.dto.product.ProductUpdateDTO;
@@ -66,6 +67,15 @@ public class ProductController {
         );
         productService.deleteProduct(productId);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "사용자가 판매 중인 상품 조회", description = "사용자가 판매 중인 상품 목록을 조회하는 API입니다.")
+    @GetMapping("/getByUserId")
+    public ResponseEntity<List<ProductGetDTO>> getProductsByUserId(
+            @Parameter(description = "사용자 ID", required = true)
+            @RequestParam Long userId) {
+        List<ProductGetDTO> products = productService.getProductByUserId(userId);
+        return ResponseEntity.ok(products);
     }
 
     /*
