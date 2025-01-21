@@ -23,8 +23,8 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     /*
-     * 특정 사용자 리뷰 조회
-     */
+    * 특정 사용자 리뷰 조회
+    */
     @Operation(summary = "특정 사용자 리뷰 조회 API", description = "특정 사용자의 리뷰를 조회하는 API입니다.")
     @GetMapping("/getUserReviews")
     public List<GetUserReviewDTO> getUserReviews(
