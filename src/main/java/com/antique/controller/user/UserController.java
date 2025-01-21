@@ -1,4 +1,4 @@
-package com.antique.controller.user;
+package com.antique.controller;
 
 import com.antique.dto.GenericResponseDTO;
 import com.antique.dto.user.UpdateAddressDTO;
@@ -6,6 +6,8 @@ import com.antique.dto.user.UpdateNicknameDTO;
 import com.antique.dto.user.UserRequestDTO;
 import com.antique.dto.user.UserResponseDTO;
 import com.antique.service.user.UserService;
+import com.antique.dto.user.*;
+import com.antique.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;

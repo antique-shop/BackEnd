@@ -32,7 +32,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<UserResponseDTO> handleProductNotFoundException(ProductNotFoundException ex) {
         ProductErrorCode errorCode = ex.getErrorCode();
         UserResponseDTO responseDto = new UserResponseDTO(
-        UserResponseDTO responseDto = new UserResponseDTO(
                 null,
                 errorCode.getMessage(),
                 errorCode.getStatus().value()
