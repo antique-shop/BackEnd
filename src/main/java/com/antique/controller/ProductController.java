@@ -99,4 +99,14 @@ public class ProductController {
         return productService.getProductInfo(productId);
     }
 
+    /*
+    상품명으로 상품 검색
+    */
+    @Operation(summary = "상품명으로 상품 검색", description = "상품명으로 상품을 검색하는 API 입니다.")
+    @GetMapping("/searchByProductName")
+    public List<ProductDTO> searchByProductName(
+            @Parameter(name = "productName", description = "검색할 이름, query string")
+            @RequestParam String productName) {
+        return productService.searchByProductName(productName);
+    }
 }
