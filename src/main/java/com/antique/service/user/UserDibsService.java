@@ -5,6 +5,7 @@ import com.antique.domain.Product;
 import com.antique.domain.User;
 import com.antique.dto.ProductDTO;
 import com.antique.exception.dibs.DibsAlreadyExistException;
+import com.antique.exception.dibs.DibsNotFoundException;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.exception.user.UserNotFoundException;
@@ -49,6 +50,23 @@ public class UserDibsService {
 
         Dibs savedDibs = dibsRepository.save(dibs);
         return savedDibs.getDibsId();
+    }
+
+    @Transactional
+    public void removeDibs(Long userId, Long productId) {
+        // 유저 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        // 상품 확인
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+
+        // 찜 데이터 확인
+        Dibs dibs = dibsRepository.findByUserAndProduct(user, product)
+                .orElseThrow(DibsNotFoundException::new);
+
+        // 찜 데이터 삭제
+        dibsRepository.delete(dibs);
     }
 
 

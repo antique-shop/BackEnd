@@ -4,6 +4,7 @@ package com.antique.exception;
 import com.antique.dto.GenericResponseDTO;
 import com.antique.exception.dibs.DibsAlreadyExistException;
 import com.antique.exception.dibs.DibsErrorCode;
+import com.antique.exception.dibs.DibsNotFoundException;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.dto.user.UserResponseDTO;
@@ -43,6 +44,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<GenericResponseDTO> handleProductNotFoundException(ProductNotFoundException ex) {
         ProductErrorCode errorCode = ex.getErrorCode();
+        GenericResponseDTO responseDto = new GenericResponseDTO(
+                null,
+                errorCode.getMessage(),
+                errorCode.getStatus().value()
+        );
+        return ResponseEntity.status(errorCode.getStatus()).body(responseDto);
+    }
+
+    // ProductNotFoundException 처리
+    @ExceptionHandler(DibsNotFoundException.class)
+    public ResponseEntity<GenericResponseDTO> handleDibsNotFoundException(DibsNotFoundException ex) {
+        DibsErrorCode errorCode = ex.getErrorCode();
         GenericResponseDTO responseDto = new GenericResponseDTO(
                 null,
                 errorCode.getMessage(),

@@ -59,4 +59,30 @@ public class UserDibsController {
         // 응답 반환
         return ResponseEntity.ok(products);
     }
+
+    @Operation(summary = "상품 찜 삭제", description = "사용자가 특정 상품의 찜을 삭제하는 API입니다.")
+    @Parameters({
+            @Parameter(name = "userId", description = "사용자 ID", required = true),
+            @Parameter(name = "productId", description = "상품 ID", required = true)
+    })
+
+
+    @DeleteMapping("/removeDibs")
+    public ResponseEntity<DibsResponseDTO> removeDibs(
+            @RequestParam Long userId,
+            @RequestParam Long productId
+    ) {
+        // 서비스 호출하여 찜 삭제
+        userDibsService.removeDibs(userId, productId);
+
+        // 성공 응답 생성
+        DibsResponseDTO response = new DibsResponseDTO(
+                null,
+                "찜 삭제가 완료되었습니다.",
+                HttpStatus.OK.value()
+        );
+
+        // 응답 반환
+        return ResponseEntity.ok(response);
+    }
 }
