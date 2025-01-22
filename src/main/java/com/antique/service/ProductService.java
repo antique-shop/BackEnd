@@ -128,6 +128,21 @@ public class ProductService {
     }
 
     /*
+    상품명으로 상품 검색
+    */
+    public List<ProductDTO> searchByProductName(String productName) {
+        List<Product> products = productRepository.findByNameContaining(productName);
+
+        // 상품이 없을 경우 예외 처리
+        if (products.isEmpty()) {
+            throw new ProductNotFoundException(ProductErrorCode.NO_PRODUCT_BY_SEARCH);
+        }
+
+        return convertToProductDTO(products);
+    }
+
+
+    /*
     응답 dto에 맞게 변환하는 메서드 (상품 전체 목록 조회 / 상품 카테고리별 목록 조회 API에 사용)
     * */
     private List<ProductDTO> convertToProductDTO(List<Product> products) {
