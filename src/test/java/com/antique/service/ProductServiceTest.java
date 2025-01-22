@@ -118,4 +118,38 @@ class ProductServiceTest {
         // When & Then
         assertThrows(ProductNotFoundException.class, () -> productService.getProductInfo(productId));
     }
+
+
+    /*
+     * 상품명으로 상품 검색
+     * - 상품이 있는 경우
+     */
+    @Test
+    public void testSearchByProductName_ProductExists() {
+        // Given
+        String productName = "Default Product Name";
+        when(productRepository.findByNameContaining(productName)).thenReturn(List.of(product));
+
+        // When
+        List<ProductDTO> productDTOs = productService.searchByProductName(productName);
+
+        // Then
+        assertNotNull(productDTOs);
+        assertEquals(1, productDTOs.size());
+        assertEquals(product.getProductId(), productDTOs.get(0).getProductId());
+    }
+
+    /*
+     * 상품명으로 상품 검색
+     * - 상품이 없는 경우
+     */
+    @Test
+    public void testSearchByProductName_ProductDoesNotExist() {
+        // Given
+        String productName = "Nonexistent Product Name";
+        when(productRepository.findByNameContaining(productName)).thenReturn(List.of());
+
+        // When & Then
+        assertThrows(ProductNotFoundException.class, () -> productService.searchByProductName(productName));
+    }
 }
