@@ -1,6 +1,7 @@
-package com.antique.service;
+package com.antique.service.review;
 
 import com.antique.domain.Review;
+import com.antique.dto.review.ReviewRequestDTO;
 import com.antique.dto.user.GetUserReviewDTO;
 import com.antique.exception.review.ReviewErrorCode;
 import com.antique.exception.review.ReviewNotFoundException;
@@ -8,6 +9,7 @@ import com.antique.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,5 +38,29 @@ public class ReviewService {
                         review.getRating()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    /*
+    * 리뷰 수정
+    */
+    public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequest) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_IS_NOT_EXIST));
+
+        review.setRating(reviewRequest.getRating());
+        review.setContent(reviewRequest.getContent());
+        review.setReviewDate(LocalDateTime.now()); // 수정 시에도 날짜를 현재로 업데이트
+
+        return reviewRepository.save(review);
+    }
+
+    /*
+    * 리뷰 삭제
+    */
+    public void deleteReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_IS_NOT_EXIST));
+
+        reviewRepository.delete(review);
     }
 }
