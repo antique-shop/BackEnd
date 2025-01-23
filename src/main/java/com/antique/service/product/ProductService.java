@@ -1,4 +1,4 @@
-package com.antique.service;
+package com.antique.service.product;
 
 import com.antique.domain.Category;
 import com.antique.domain.Product;
