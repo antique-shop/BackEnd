@@ -40,5 +40,56 @@ public class Review {
 
     @Column
     private LocalDateTime reviewDate;
+
+    // 빌더 클래스
+    public static class Builder {
+        private User reviewer;
+        private User reviewedUser;
+        private Product product;
+        private int rating;
+        private String content;
+        private LocalDateTime reviewDate = LocalDateTime.now();
+
+        public Builder reviewer(User reviewer) {
+            this.reviewer = reviewer;
+            return this;
+        }
+
+        public Builder reviewedUser(User reviewedUser) {
+            this.reviewedUser = reviewedUser;
+            return this;
+        }
+
+        public Builder product(Product product) {
+            this.product = product;
+            return this;
+        }
+
+        public Builder rating(int rating) {
+            this.rating = rating;
+            return this;
+        }
+
+        public Builder content(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder reviewDate(LocalDateTime reviewDate) {
+            this.reviewDate = reviewDate;
+            return this;
+        }
+
+        public Review build() {
+            Review review = new Review();
+            review.reviewer = this.reviewer;
+            review.reviewedUser = this.reviewedUser;
+            review.product = this.product;
+            review.rating = this.rating;
+            review.content = this.content;
+            review.reviewDate = this.reviewDate;
+            return review;
+        }
+    }
 }
 
