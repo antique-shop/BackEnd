@@ -8,6 +8,7 @@ import com.antique.dto.product.ProductDTO;
 import com.antique.dto.product.ProductInfoDTO;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.repository.ProductRepository;
+import com.antique.service.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
