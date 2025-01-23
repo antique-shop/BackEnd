@@ -8,20 +8,18 @@ import com.antique.domain.User;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.exception.category.CategoryNotFoundException;
-import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.CategoryRepository;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.UserRepository;
-import com.antique.service.ProductService;
+import com.antique.service.product.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
