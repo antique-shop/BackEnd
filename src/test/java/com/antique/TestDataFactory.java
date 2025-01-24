@@ -107,6 +107,7 @@ public class TestDataFactory {
                 .name("Default Product Name")
                 .description("Default Description")
                 .price(100000)
+                .status(Product.Status.AVAILABLE)
                 .category(category)
                 .seller(seller)
                 .productImages(productImages)
