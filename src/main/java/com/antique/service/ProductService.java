@@ -9,10 +9,8 @@ import com.antique.dto.product.ProductDTO;
 import com.antique.dto.product.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
-import com.antique.exception.category.CategoryNotFoundException;
-import com.antique.exception.product.ProductErrorCode;
-import com.antique.exception.product.ProductNotFoundException;
-import com.antique.exception.user.UserNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.CategoryRepository;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.UserRepository;
@@ -38,11 +36,11 @@ public class ProductService {
     public Long registerProduct(ProductRequestDTO request) {
         // 1. 판매자 확인
         User seller = userRepository.findById(request.getUserId())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 2. 카테고리 확인
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(CategoryNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.CATEGORY_NOT_FOUND));
 
         // 3. 상품 생성 (Builder 사용)
         Product product = Product.builder()
@@ -77,13 +75,13 @@ public class ProductService {
     public Long updateProduct(ProductUpdateDTO request) {
         // 1. 상품 확인
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
         // 2. 판매자 확인
         User seller = userRepository.findById(request.getUserId())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
         // 3. 카테고리 확인
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(CategoryNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.CATEGORY_NOT_FOUND));
         // 4. Product 엔티티의 수정 메서드 호출
         product.updateFromDTO(request, category, seller);
 
@@ -96,7 +94,7 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         // 1. 상품 확인
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
 
         productRepository.deleteById(productId);
     }
@@ -106,7 +104,7 @@ public class ProductService {
     public List<ProductGetDTO> getProductByUserId(Long userId) {
         // 1. 사용자 확인
         User seller = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 2. 판매 중이면서 삭제되지 않은 상품 조회
         List<Product> availableProducts = productRepository.findBySellerAndStatusAndIsDeleted(
@@ -149,7 +147,7 @@ public class ProductService {
     public ResponseEntity<ProductInfoDTO> getProductInfo(Long productId) {
         return productRepository.findById(productId)
                 .map(product -> ResponseEntity.ok(new ProductInfoDTO(product)))
-                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
     }
 
     /*
@@ -160,7 +158,7 @@ public class ProductService {
 
         // 상품이 없을 경우 예외 처리
         if (products.isEmpty()) {
-            throw new ProductNotFoundException(ProductErrorCode.NO_PRODUCT_BY_SEARCH);
+            throw new BaseException(CommonErrorCode.NO_PRODUCT_BY_SEARCH);
         }
 
         return convertToProductDTO(products);

@@ -2,8 +2,8 @@ package com.antique.service;
 
 import com.antique.domain.Review;
 import com.antique.dto.user.GetUserReviewDTO;
-import com.antique.exception.review.ReviewErrorCode;
-import com.antique.exception.review.ReviewNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class ReviewService {
 
         // 리뷰가 존재하지 않을 경우 예외 처리
         if (reviews.isEmpty()) {
-            throw new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND);
+            throw new BaseException(CommonErrorCode.REVIEW_NOT_FOUND);
         }
 
         return reviews.stream()
