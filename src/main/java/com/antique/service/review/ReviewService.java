@@ -4,7 +4,6 @@ import com.antique.domain.Product;
 import com.antique.domain.Review;
 import com.antique.dto.review.ReviewRequestDTO;
 import com.antique.domain.User;
-import com.antique.dto.review.ReviewRequestDTO;
 import com.antique.dto.user.GetUserReviewDTO;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
