@@ -1,13 +1,11 @@
 package com.antique;
 
-import com.antique.domain.Category;
-import com.antique.domain.Product;
-import com.antique.domain.ProductImage;
-import com.antique.domain.User;
+import com.antique.domain.*;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.dto.user.UserRequestDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -120,6 +118,18 @@ public class TestDataFactory {
         return Category.builder()
                 .categoryId(categoryId)
                 .categoryName(categoryName)
+                .build();
+    }
+
+    // Review 생성
+    public static Review createReview(Product product, User reviewer,User reviewedUser, String content, LocalDateTime reviewDate, int rating) {
+        return new Review.Builder()
+                .product(product)
+                .reviewer(reviewer)
+                .reviewedUser(reviewedUser)
+                .content(content)
+                .reviewDate(reviewDate)
+                .rating(rating)
                 .build();
     }
 }
