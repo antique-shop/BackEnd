@@ -5,6 +5,7 @@ import com.antique.domain.Category;
 import com.antique.domain.Dibs;
 import com.antique.domain.Product;
 import com.antique.domain.User;
+import com.antique.exception.dibs.DibsNotFoundException;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.dto.product.ProductDTO;
 import com.antique.exception.user.UserNotFoundException;
@@ -139,4 +140,57 @@ class UserDibsServiceTest {
         verify(userRepository, times(1)).findById(999L);
         verify(dibsRepository, never()).findByUser(any());
     }
+
+    @Test
+    void testRemoveDibs_Success() {
+        // Given: Mock 데이터 생성
+        Long userId = 1L;
+        Long productId = 101L;
+
+        User user = TestDataFactory.createUserWithDefault(userId);
+        Category category = TestDataFactory.createCategory(1L, Category.CategoryName.TOPS);
+        Product product = TestDataFactory.createProductWithDefaults(productId, user, category);
+
+        Dibs dibs = Dibs.builder()
+                .user(user)
+                .product(product)
+                .build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(dibsRepository.findByUserAndProduct(user, product)).thenReturn(Optional.of(dibs));
+
+        // When: 메서드 호출
+        userDibsService.removeDibs(userId, productId);
+
+        // Then: 검증
+        verify(userRepository, times(1)).findById(userId);
+        verify(productRepository, times(1)).findById(productId);
+        verify(dibsRepository, times(1)).findByUserAndProduct(user, product);
+        verify(dibsRepository, times(1)).delete(dibs);
+    }
+
+    @Test
+    void testRemoveDibs_DibsNotFound() {
+        // Given: 찜 데이터가 존재하지 않는 경우
+        Long userId = 1L;
+        Long productId = 101L;
+
+        User user = TestDataFactory.createUserWithDefault(userId);
+        Category category = TestDataFactory.createCategory(1L, Category.CategoryName.TOPS);
+        Product product = TestDataFactory.createProductWithDefaults(productId, user, category);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(dibsRepository.findByUserAndProduct(user, product)).thenReturn(Optional.empty());
+
+        // When & Then: 예외 검증
+        assertThrows(DibsNotFoundException.class, () -> userDibsService.removeDibs(userId, productId));
+
+        verify(userRepository, times(1)).findById(userId);
+        verify(productRepository, times(1)).findById(productId);
+        verify(dibsRepository, times(1)).findByUserAndProduct(user, product);
+        verify(dibsRepository, never()).delete(any());
+    }
+
 }
