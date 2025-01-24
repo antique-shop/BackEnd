@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ProductErrorCode {
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다.");
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
+    NO_PRODUCT_BY_SEARCH(HttpStatus.NOT_FOUND, "검색명에 맞는 상품이 없습니다.");
 
     private final HttpStatus status;
     private final String message;
