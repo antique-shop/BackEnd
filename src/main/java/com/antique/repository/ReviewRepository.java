@@ -11,5 +11,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByProduct_ProductId(Long productId);
 
     // 특정 사용자가 작성한 리뷰 조회
-    List<Review> findByUser_UserId(Long userId);
+    List<Review> findByReviewedUser_UserId(Long userId);
 }

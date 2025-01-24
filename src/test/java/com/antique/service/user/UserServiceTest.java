@@ -30,7 +30,6 @@ class UserServiceTest {
 
     @Test
     void testUpdateUserDetails() {
-
         // Given: 기존 사용자 Mock 데이터
         User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
         UserRequestDTO userRequestDto = TestDataFactory.createUserRequestDTO("UpdatedNickname", "Updated Address");
@@ -55,6 +54,7 @@ class UserServiceTest {
         Long notExistUserId = 999L;
 
         UserRequestDTO userRequestDto = TestDataFactory.createUserRequestDTO("UpdatedNickname", "Updated Address");
+
 
         when(userRepository.findById(notExistUserId)).thenReturn(Optional.empty());
 

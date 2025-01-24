@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "review")
@@ -18,10 +19,13 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    @ToString.Exclude
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="reviewer_id", nullable = false)
+    private User reviewer; // 리뷰 작성자
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="reviewed_user_id", nullable = false)
+    private User reviewedUser; // 리뷰 대상자
 
     @ManyToOne
     @JoinColumn(name = "productId", nullable = false)
@@ -35,6 +39,6 @@ public class Review {
     private String content;
 
     @Column
-    private LocalDate reviewDate;
+    private LocalDateTime reviewDate;
 }
 

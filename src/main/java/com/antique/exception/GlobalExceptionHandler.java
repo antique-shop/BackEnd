@@ -8,6 +8,8 @@ import com.antique.exception.dibs.DibsNotFoundException;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.dto.user.UserResponseDTO;
+import com.antique.exception.review.ReviewErrorCode;
+import com.antique.exception.review.ReviewNotFoundException;
 import com.antique.exception.user.UserErrorCode;
 import com.antique.exception.user.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +59,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<GenericResponseDTO> handleDibsNotFoundException(DibsNotFoundException ex) {
         DibsErrorCode errorCode = ex.getErrorCode();
         GenericResponseDTO responseDto = new GenericResponseDTO(
+                null,
+                errorCode.getMessage(),
+                errorCode.getStatus().value()
+        );
+        return ResponseEntity.status(errorCode.getStatus()).body(responseDto);
+    }
+  
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<UserResponseDTO> handleReviewNotFoundException(ReviewNotFoundException ex) {
+        ReviewErrorCode errorCode = ex.getErrorCode();
+        UserResponseDTO responseDto = new UserResponseDTO(
                 null,
                 errorCode.getMessage(),
                 errorCode.getStatus().value()
