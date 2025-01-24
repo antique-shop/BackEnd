@@ -36,6 +36,25 @@ public class ReviewController {
         return reviewService.getUserReviews(userId);
     }
 
+    /*
+     * 리뷰 작성
+     */
+    @Operation(summary = "리뷰 작성 API", description = "리뷰를 작성하는 API입니다.")
+    @PostMapping("/postReview")
+    public ResponseEntity<GenericResponseDTO> createReview(@RequestBody ReviewRequestDTO reviewRequest) {
+        Review review = reviewService.createReview(reviewRequest);
+
+        Long reviewId = review.getReviewId();
+
+        GenericResponseDTO responseDto = new GenericResponseDTO(
+                reviewId,
+                "리뷰가 성공적으로 등록되었습니다.",
+                HttpStatus.OK.value() // HTTP 상태 코드
+        );
+
+        return ResponseEntity.ok(responseDto);
+    }
+
 
     /*
      * 리뷰 수정
