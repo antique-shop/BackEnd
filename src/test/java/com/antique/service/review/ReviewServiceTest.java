@@ -44,18 +44,46 @@ public class ReviewServiceTest {
     }
 
     /*
+    * 테스트를 위한 객체 생성 메서드
+    * */
+    public User createReviewer() {
+        User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname", "reviewerAddress");
+
+        return reviewer;
+    }
+
+    public User createReviewedUser() {
+        User reviewedUser = TestDataFactory.createUser(2L, "reviewed@example.com", "reviewedNickname", "reviewerAddress");
+
+        return reviewedUser;
+    }
+
+    public Product createProduct() {
+        Product product = TestDataFactory.createProduct(1L, "Product1", "Old Description", 1000);
+
+        return product;
+    }
+
+
+    public Review createUserProductReview() {
+        User reviewer = createReviewer();
+        User reviewedUser = createReviewedUser();
+        Product product = createProduct();
+
+        Review review = TestDataFactory.createReview(product, reviewer, reviewedUser,"Great product!", LocalDateTime.parse("2025-01-23T00:00:00"), 5);
+
+        return review;
+    }
+
+    /*
      * 리뷰 조회
      */
     @Test
     public void testGetUserReviews_Success() {
         // Given
-        Long reviewedId = 2L;
+        Long reviewedId = 1L;
 
-        User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname", "reviewerAddress");
-        User reviewedUser = TestDataFactory.createUser(2L, "reviewed@example.com", "reviewedNickname", "reviewerAddress");
-        Product product = TestDataFactory.createProduct(1L, "Product1", "Old Description", 1000);
-
-        Review review = TestDataFactory.createReview(product, reviewer, reviewedUser,"Great product!", LocalDateTime.parse("2025-01-23T00:00:00"), 5);
+        Review review = createUserProductReview();
 
         when(reviewRepository.findByReviewedUser_UserId(reviewedId)).thenReturn(List.of(review));
 
@@ -78,9 +106,11 @@ public class ReviewServiceTest {
     public void testCreateReview_Success() {
         // Given
         ReviewRequestDTO reviewRequest = new ReviewRequestDTO(1L, 2L, 1L, 5, "Great product!");
-        User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname", "reviewerAddress");
-        User reviewedUser = TestDataFactory.createUser(2L, "reviewed@example.com", "reviewedNickname", "reviewerAddress");
-        Product product = TestDataFactory.createProduct(1L, "Product1", "Old Description", 1000);
+
+
+        User reviewer = createReviewer();
+        User reviewedUser = createReviewedUser();
+        Product product = createProduct();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(reviewer));
         when(userRepository.findById(2L)).thenReturn(Optional.of(reviewedUser));
@@ -108,11 +138,7 @@ public class ReviewServiceTest {
         // Given
         Long reviewId = 1L;
 
-        User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname", "reviewerAddress");
-        User reviewedUser = TestDataFactory.createUser(2L, "reviewed@example.com", "reviewedNickname", "reviewerAddress");
-        Product product = TestDataFactory.createProduct(1L, "Product1", "Old Description", 1000);
-
-        Review existingReview = TestDataFactory.createReview(product, reviewer, reviewedUser,"Great product!", LocalDateTime.parse("2025-01-23T00:00:00"), 5);
+        Review existingReview = createUserProductReview();
 
         ReviewRequestDTO reviewRequest = new ReviewRequestDTO();
 
@@ -136,12 +162,8 @@ public class ReviewServiceTest {
     public void testDeleteReview_Success() {
         // Given
         Long reviewId = 1L;
-        User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname", "reviewerAddress");
-        User reviewedUser = TestDataFactory.createUser(2L, "reviewed@example.com", "reviewedNickname", "reviewerAddress");
-        Product product = TestDataFactory.createProduct(1L, "Product1", "Old Description", 1000);
 
-        Review existingReview = TestDataFactory.createReview(product, reviewer, reviewedUser,"Great product!", LocalDateTime.parse("2025-01-23T00:00:00"), 5);
-
+        Review existingReview = createUserProductReview();
 
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(existingReview));
 
