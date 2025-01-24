@@ -5,6 +5,7 @@ import com.antique.domain.Category;
 import com.antique.domain.Product;
 import com.antique.domain.ProductImage;
 import com.antique.domain.User;
+import com.antique.dto.product.ProductGetDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.exception.category.CategoryNotFoundException;
@@ -59,8 +60,7 @@ class UserProductServiceTest {
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         // When: 서비스 호출
-        Long savedProductId = productService.registerProduct(request);
-        Long productId = productService.registerProduct(request);
+        productId = productService.registerProduct(request);
 
         // Then: 결과 검증
         assertThat(productId).isNotNull();
@@ -217,5 +217,55 @@ class UserProductServiceTest {
         // Then: 검증
         assertThat(product.getIsDeleted()).isTrue(); // isDeleted 필드가 true로 설정되었는지 확인
         verify(productRepository, times(1)).save(product); // 저장 호출 검증
+    }
+
+    @Test
+    void testGetProductByUserId_Success() {
+        // Given: Mock 데이터 설정
+        Long userId = 1L;
+        User seller = TestDataFactory.createUserWithDefault(userId);
+
+        Product product1 = TestDataFactory.createProductWithDefaults(1L, seller, TestDataFactory.createCategory(1L, Category.CategoryName.TOPS));
+        Product product2 = TestDataFactory.createProductWithDefaults(2L, seller, TestDataFactory.createCategory(2L, Category.CategoryName.BOTTOMS));
+
+        List<Product> products = List.of(product1, product2);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(seller));
+        when(productRepository.findBySellerAndStatusAndIsDeleted(seller, Product.Status.AVAILABLE, false))
+                .thenReturn(products);
+
+        // When: 메서드 호출
+        List<ProductGetDTO> result = productService.getProductByUserId(userId);
+
+        // Then: 검증
+        assertThat(result).hasSize(2);
+
+        // 첫 번째 상품 검증
+        ProductGetDTO dto1 = result.get(0);
+        assertThat(dto1.getProductId()).isEqualTo(1L);
+        assertThat(dto1.getName()).isEqualTo(product1.getName());
+        assertThat(dto1.getDescription()).isEqualTo(product1.getDescription());
+        assertThat(dto1.getPrice()).isEqualTo(product1.getPrice());
+        assertThat(dto1.getStatus()).isEqualTo(product1.getStatus().toString());
+        assertThat(dto1.getProductImages()).containsExactly(
+                "https://example.com/default-image1.jpg",
+                "https://example.com/default-image2.jpg"
+        );
+
+        // 두 번째 상품 검증
+        ProductGetDTO dto2 = result.get(1);
+        assertThat(dto2.getProductId()).isEqualTo(2L);
+        assertThat(dto2.getName()).isEqualTo(product2.getName());
+        assertThat(dto2.getDescription()).isEqualTo(product2.getDescription());
+        assertThat(dto2.getPrice()).isEqualTo(product2.getPrice());
+        assertThat(dto2.getStatus()).isEqualTo(product2.getStatus().toString());
+        assertThat(dto2.getProductImages()).containsExactly(
+                "https://example.com/default-image1.jpg",
+                "https://example.com/default-image2.jpg"
+        );
+
+        // Mock 호출 검증
+        verify(userRepository, times(1)).findById(userId);
+        verify(productRepository, times(1)).findBySellerAndStatusAndIsDeleted(seller, Product.Status.AVAILABLE, false);
     }
 }
