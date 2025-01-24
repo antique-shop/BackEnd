@@ -2,7 +2,7 @@ package com.antique.service.user;
 
 import com.antique.domain.Dibs;
 import com.antique.domain.User;
-import com.antique.dto.ProductDTO;
+import com.antique.dto.product.ProductDTO;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.DibsRepository;
 import com.antique.repository.UserRepository;

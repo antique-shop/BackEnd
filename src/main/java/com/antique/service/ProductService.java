@@ -4,9 +4,9 @@ import com.antique.domain.Category;
 import com.antique.domain.Product;
 import com.antique.domain.ProductImage;
 import com.antique.domain.User;
-import com.antique.dto.ProductDTO;
-import com.antique.dto.ProductInfoDTO;
 import com.antique.dto.product.ProductGetDTO;
+import com.antique.dto.product.ProductDTO;
+import com.antique.dto.product.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
 import com.antique.exception.category.CategoryNotFoundException;
@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import com.antique.dto.product.ProductUpdateDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -154,6 +153,21 @@ public class ProductService {
                 .map(product -> ResponseEntity.ok(new ProductInfoDTO(product)))
                 .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
     }
+
+    /*
+    상품명으로 상품 검색
+    */
+    public List<ProductDTO> searchByProductName(String productName) {
+        List<Product> products = productRepository.findByNameContaining(productName);
+
+        // 상품이 없을 경우 예외 처리
+        if (products.isEmpty()) {
+            throw new ProductNotFoundException(ProductErrorCode.NO_PRODUCT_BY_SEARCH);
+        }
+
+        return convertToProductDTO(products);
+    }
+
 
     /*
     응답 dto에 맞게 변환하는 메서드 (상품 전체 목록 조회 / 상품 카테고리별 목록 조회 API에 사용)
