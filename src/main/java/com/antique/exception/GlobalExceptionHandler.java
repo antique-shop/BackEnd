@@ -1,6 +1,9 @@
 package com.antique.exception;
 
 
+import com.antique.dto.GenericResponseDTO;
+import com.antique.exception.dibs.DibsAlreadyExistException;
+import com.antique.exception.dibs.DibsErrorCode;
 import com.antique.exception.product.ProductErrorCode;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.dto.user.UserResponseDTO;
@@ -15,11 +18,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // IllegalArgumentException 처리
+    @ExceptionHandler(DibsAlreadyExistException.class)
+    public ResponseEntity<GenericResponseDTO> handleDibsAlreadyExistException(DibsAlreadyExistException ex) {
+        DibsErrorCode errorCode = ex.getErrorCode();
+        GenericResponseDTO responseDto = new GenericResponseDTO(
+                null,
+                errorCode.getMessage(),
+                errorCode.getStatus().value()
+        );
+        return ResponseEntity.status(errorCode.getStatus()).body(responseDto);
+    }
+
+    // UserNotFoundException 처리
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<UserResponseDTO> handleUserNotFoundException(UserNotFoundException ex) {
+    public ResponseEntity<GenericResponseDTO> handleUserNotFoundException(UserNotFoundException ex) {
         UserErrorCode errorCode = ex.getErrorCode();
-        UserResponseDTO responseDto = new UserResponseDTO(
+        GenericResponseDTO responseDto = new GenericResponseDTO(
                 null,
                 errorCode.getMessage(),
                 errorCode.getStatus().value()
@@ -29,9 +43,9 @@ public class GlobalExceptionHandler {
 
     // ProductNotFoundException 처리
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<UserResponseDTO> handleProductNotFoundException(ProductNotFoundException ex) {
+    public ResponseEntity<GenericResponseDTO> handleProductNotFoundException(ProductNotFoundException ex) {
         ProductErrorCode errorCode = ex.getErrorCode();
-        UserResponseDTO responseDto = new UserResponseDTO(
+        GenericResponseDTO responseDto = new GenericResponseDTO(
                 null,
                 errorCode.getMessage(),
                 errorCode.getStatus().value()
@@ -53,9 +67,9 @@ public class GlobalExceptionHandler {
 
     // 그 외 예외 처리
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<UserResponseDTO> handleGenericException(Exception ex) {
+    public ResponseEntity<GenericResponseDTO> handleGenericException(Exception ex) {
         GlobalErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
-        UserResponseDTO responseDto = new UserResponseDTO(
+        GenericResponseDTO responseDto = new GenericResponseDTO(
                 null,
                 errorCode.getMessage(),
                 errorCode.getStatus().value()

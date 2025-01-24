@@ -1,6 +1,5 @@
 package com.antique.exception.user;
 
-import com.antique.domain.User;
 import lombok.Getter;
 
 @Getter

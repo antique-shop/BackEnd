@@ -1,10 +1,15 @@
 package com.antique.service.user;
 
 import com.antique.domain.Dibs;
+import com.antique.domain.Product;
 import com.antique.domain.User;
+import com.antique.exception.dibs.DibsAlreadyExistException;
+import com.antique.exception.product.ProductErrorCode;
+import com.antique.exception.product.ProductNotFoundException;
 import com.antique.dto.product.ProductDTO;
 import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.DibsRepository;
+import com.antique.repository.ProductRepository;
 import com.antique.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,33 @@ public class UserDibsService {
 
     private final UserRepository userRepository;
     private final DibsRepository dibsRepository;
+    private final ProductRepository productRepository;
+
+    @Transactional
+    public Long addDibs(Long userId, Long productId) {
+        // 유저 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        // 상품 확인
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+
+        // 중복 체크
+        boolean exists = dibsRepository.existsByUserAndProduct(user, product);
+        if (exists) {
+            throw new DibsAlreadyExistException();
+        }
+
+        // 찜 데이터 생성
+        Dibs dibs = Dibs.builder()
+                .user(user)
+                .product(product)
+                .build();
+
+        Dibs savedDibs = dibsRepository.save(dibs);
+        return savedDibs.getDibsId();
+    }
+
 
     @Transactional(readOnly = true)
     public List<ProductDTO> getUserDibsProducts(Long userId) {
