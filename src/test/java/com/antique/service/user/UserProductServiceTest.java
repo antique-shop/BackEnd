@@ -214,11 +214,14 @@ class UserProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
         // When: 삭제 메서드 호출
-       productService.deleteProduct(productId);
+        productService.deleteProduct(productId);
 
         // Then: 검증
-        assertThat(product.getIsDeleted()).isTrue(); // isDeleted 필드가 true로 설정되었는지 확인
-        verify(productRepository, times(1)).save(product); // 저장 호출 검증
+        verify(productRepository, times(1)).findById(productId); // findById 호출 검증
+        verify(productRepository, never()).save(any(Product.class)); // save 호출 없음 확인
+
+        // 엔티티가 Hibernate의 삭제 메서드를 통해 삭제됐는지 확인
+        verify(productRepository, times(1)).deleteById(productId);
     }
 
     @Test

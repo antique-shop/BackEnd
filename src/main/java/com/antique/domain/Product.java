@@ -3,6 +3,8 @@ package com.antique.domain;
 import com.antique.dto.product.ProductUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE product SET isDeleted = true WHERE productId = ?")
+@Where(clause = "isDeleted = false")
 public class Product {
 
     @Id
@@ -57,7 +61,7 @@ public class Product {
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Dibs> dibs;
