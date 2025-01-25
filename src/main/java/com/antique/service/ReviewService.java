@@ -5,12 +5,8 @@ import com.antique.domain.Review;
 import com.antique.domain.User;
 import com.antique.dto.review.ReviewRequestDTO;
 import com.antique.dto.user.GetUserReviewDTO;
-import com.antique.exception.product.ProductErrorCode;
-import com.antique.exception.product.ProductNotFoundException;
-import com.antique.exception.review.ReviewErrorCode;
-import com.antique.exception.review.ReviewNotFoundException;
-import com.antique.exception.user.UserErrorCode;
-import com.antique.exception.user.UserNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.ReviewRepository;
 import com.antique.repository.UserRepository;
@@ -36,7 +32,7 @@ public class ReviewService {
 
         // 리뷰가 존재하지 않을 경우 예외 처리
         if (reviews.isEmpty()) {
-            throw new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND);
+            throw new BaseException(CommonErrorCode.REVIEW_NOT_FOUND);
         }
 
         return reviews.stream()
@@ -55,13 +51,13 @@ public class ReviewService {
     */
     public Review createReview(ReviewRequestDTO reviewRequest) {
         User reviewer = userRepository.findById(reviewRequest.getReviewerId())
-                .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         User reviewedUser = userRepository.findById(reviewRequest.getReviewedUserId())
-                .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         Product product = productRepository.findById(reviewRequest.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
 
         Review review = new Review.Builder()
                 .reviewer(reviewer)
