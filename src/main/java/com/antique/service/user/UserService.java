@@ -27,4 +27,10 @@ public class UserService {
         userRepository.save(user);
         return user.getUserId(); // 업데이트된 유저 ID 반환
     }
+
+    // 닉네임 중복 확인 메서드
+    @Transactional(readOnly = true)
+    public boolean nicknameCheck(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
 }
