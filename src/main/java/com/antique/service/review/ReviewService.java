@@ -14,6 +14,7 @@ import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.ReviewRepository;
 import com.antique.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,7 @@ public class ReviewService {
     /*
     * 리뷰 작성
     */
+    @Transactional
     public Review createReview(ReviewRequestDTO reviewRequest) {
         User reviewer = userRepository.findById(reviewRequest.getReviewerId())
                 .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
@@ -77,6 +79,7 @@ public class ReviewService {
     /*
     * 리뷰 수정
     */
+    @Transactional
     public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequest) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_IS_NOT_EXIST));
@@ -91,6 +94,7 @@ public class ReviewService {
     /*
     * 리뷰 삭제
     */
+    @Transactional
     public void deleteReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_IS_NOT_EXIST));
