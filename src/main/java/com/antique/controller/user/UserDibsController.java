@@ -1,6 +1,5 @@
 package com.antique.controller.user;
 
-import com.antique.dto.GenericResponseDTO;
 import com.antique.dto.dibs.DibsResponseDTO;
 import com.antique.dto.product.ProductDTO;
 import com.antique.service.user.UserDibsService;
