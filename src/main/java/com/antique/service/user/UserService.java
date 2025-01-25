@@ -2,7 +2,8 @@ package com.antique.service.user;
 
 import com.antique.domain.User;
 import com.antique.dto.user.UserRequestDTO;
-import com.antique.exception.user.UserNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class UserService {
     public Long updateUserDetails(Long userId, UserRequestDTO userRequestDto) {
         // 1. 기존 유저 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 2. 닉네임과 주소 업데이트
         user.updateNicknameAndAddress(userRequestDto.getNickname(), userRequestDto.getAddress());
@@ -31,7 +32,7 @@ public class UserService {
     public Long updateUserNickname(Long userId, String nickname) {
         // 1. 기존 유저 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 2. 닉네임 업데이트
         user.updateNickname(nickname);
@@ -45,7 +46,7 @@ public class UserService {
     public Long updateUserAddress(Long userId, String address) {
         // 1. 기존 유저 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 2. 닉네임 업데이트
         user.updateAddress(address);

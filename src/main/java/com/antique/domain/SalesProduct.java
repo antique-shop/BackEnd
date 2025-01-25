@@ -14,7 +14,6 @@ public class SalesProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sales_product_id")
     private Long salesProductId;
 
     @ManyToOne

@@ -5,10 +5,9 @@ import com.antique.domain.Category;
 import com.antique.domain.Dibs;
 import com.antique.domain.Product;
 import com.antique.domain.User;
-import com.antique.exception.dibs.DibsNotFoundException;
-import com.antique.exception.product.ProductNotFoundException;
 import com.antique.dto.product.ProductDTO;
-import com.antique.exception.user.UserNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.DibsRepository;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.UserRepository;
@@ -83,7 +82,10 @@ class UserDibsServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(ProductNotFoundException.class, () -> userDibsService.addDibs(userId, productId));
+        BaseException exception = assertThrows(BaseException.class,
+                () -> userDibsService.addDibs(userId, productId));
+
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.PRODUCT_NOT_FOUND);
 
         verify(userRepository, times(1)).findById(userId);
         verify(productRepository, times(1)).findById(productId);
@@ -135,7 +137,10 @@ class UserDibsServiceTest {
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(UserNotFoundException.class, () -> userDibsService.getUserDibsProducts(999L));
+        BaseException exception = assertThrows(BaseException.class,
+                () -> userDibsService.getUserDibsProducts(999L));
+
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.USER_NOT_FOUND);
 
         verify(userRepository, times(1)).findById(999L);
         verify(dibsRepository, never()).findByUser(any());
@@ -185,7 +190,10 @@ class UserDibsServiceTest {
         when(dibsRepository.findByUserAndProduct(user, product)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(DibsNotFoundException.class, () -> userDibsService.removeDibs(userId, productId));
+        BaseException exception = assertThrows(BaseException.class,
+                () -> userDibsService.removeDibs(userId, productId));
+
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.DIBS_NOT_FOUND);
 
         verify(userRepository, times(1)).findById(userId);
         verify(productRepository, times(1)).findById(productId);

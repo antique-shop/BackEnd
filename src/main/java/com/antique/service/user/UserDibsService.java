@@ -3,12 +3,9 @@ package com.antique.service.user;
 import com.antique.domain.Dibs;
 import com.antique.domain.Product;
 import com.antique.domain.User;
-import com.antique.exception.dibs.DibsAlreadyExistException;
-import com.antique.exception.dibs.DibsNotFoundException;
-import com.antique.exception.product.ProductErrorCode;
-import com.antique.exception.product.ProductNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.dto.product.ProductDTO;
-import com.antique.exception.user.UserNotFoundException;
 import com.antique.repository.DibsRepository;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.UserRepository;
@@ -31,15 +28,15 @@ public class UserDibsService {
     public Long addDibs(Long userId, Long productId) {
         // 유저 확인
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
         // 상품 확인
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
 
         // 중복 체크
         boolean exists = dibsRepository.existsByUserAndProduct(user, product);
         if (exists) {
-            throw new DibsAlreadyExistException();
+            throw new BaseException(CommonErrorCode.DIBS_ALREADY_EXISTS);
         }
 
         // 찜 데이터 생성
@@ -56,14 +53,14 @@ public class UserDibsService {
     public void removeDibs(Long userId, Long productId) {
         // 유저 확인
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
         // 상품 확인
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
 
         // 찜 데이터 확인
         Dibs dibs = dibsRepository.findByUserAndProduct(user, product)
-                .orElseThrow(DibsNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.DIBS_NOT_FOUND));
 
         // 찜 데이터 삭제
         dibsRepository.delete(dibs);
@@ -74,7 +71,7 @@ public class UserDibsService {
     public List<ProductDTO> getUserDibsProducts(Long userId) {
         // 유저 확인
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 찜 목록 조회
         List<Dibs> dibsList = dibsRepository.findByUser(user);
