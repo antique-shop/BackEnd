@@ -6,7 +6,8 @@ import com.antique.domain.Product;
 import com.antique.domain.User;
 import com.antique.dto.product.ProductDTO;
 import com.antique.dto.product.ProductInfoDTO;
-import com.antique.exception.product.ProductNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.ProductRepository;
 import com.antique.service.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -117,7 +119,12 @@ class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(ProductNotFoundException.class, () -> productService.getProductInfo(productId));
+        BaseException exception = assertThrows(
+                BaseException.class,
+                () -> productService.getProductInfo(productId)
+        );
+
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.PRODUCT_NOT_FOUND);
     }
 
 
@@ -151,6 +158,11 @@ class ProductServiceTest {
         when(productRepository.findByNameContaining(productName)).thenReturn(List.of());
 
         // When & Then
-        assertThrows(ProductNotFoundException.class, () -> productService.searchByProductName(productName));
+        BaseException exception = assertThrows(
+                BaseException.class,
+                () -> productService.searchByProductName(productName)
+        );
+
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.NO_PRODUCT_BY_SEARCH);
     }
 }

@@ -3,7 +3,8 @@ package com.antique.service.user;
 import com.antique.TestDataFactory;
 import com.antique.domain.User;
 import com.antique.dto.user.UserRequestDTO;
-import com.antique.exception.user.UserNotFoundException;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,12 +60,16 @@ class UserServiceTest {
         when(userRepository.findById(notExistUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        UserNotFoundException exception = assertThrows(
-                UserNotFoundException.class,
+        BaseException exception = assertThrows(
+                BaseException.class,
                 () -> userService.updateUserDetails(notExistUserId, userRequestDto)
         );
 
-        assertEquals("존재하지 않는 사용자입니다.", exception.getMessage());
+        // 에러 코드 검증
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.USER_NOT_FOUND);
+
+        verify(userRepository, times(1)).findById(notExistUserId);
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test

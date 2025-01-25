@@ -8,6 +8,8 @@ import com.antique.domain.User;
 import com.antique.dto.product.ProductGetDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductUpdateDTO;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.exception.category.CategoryNotFoundException;
 import com.antique.exception.product.ProductNotFoundException;
 import com.antique.exception.user.UserNotFoundException;
@@ -94,7 +96,9 @@ class UserProductServiceTest {
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(UserNotFoundException.class, () -> productService.registerProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.registerProduct(request));
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.USER_NOT_FOUND); // 에러 코드 확인
+
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -111,7 +115,9 @@ class UserProductServiceTest {
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(CategoryNotFoundException.class, () -> productService.registerProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.registerProduct(request));
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.CATEGORY_NOT_FOUND); // 에러 코드 확인
+
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -164,7 +170,9 @@ class UserProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(ProductNotFoundException.class, () -> productService.updateProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(request));
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.PRODUCT_NOT_FOUND); // 에러 코드 확인
+
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -182,7 +190,9 @@ class UserProductServiceTest {
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(UserNotFoundException.class, () -> productService.updateProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(request));
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.USER_NOT_FOUND); // 에러 코드 확인
+
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -201,7 +211,9 @@ class UserProductServiceTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        assertThrows(CategoryNotFoundException.class, () -> productService.updateProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(request));
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.CATEGORY_NOT_FOUND); // 에러 코드 확인
+
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -213,11 +225,14 @@ class UserProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
         // When: 삭제 메서드 호출
-       productService.deleteProduct(productId);
+        productService.deleteProduct(productId);
 
         // Then: 검증
-        assertThat(product.getIsDeleted()).isTrue(); // isDeleted 필드가 true로 설정되었는지 확인
-        verify(productRepository, times(1)).save(product); // 저장 호출 검증
+        verify(productRepository, times(1)).findById(productId); // findById 호출 검증
+        verify(productRepository, never()).save(any(Product.class)); // save 호출 없음 확인
+
+        // 엔티티가 Hibernate의 삭제 메서드를 통해 삭제됐는지 확인
+        verify(productRepository, times(1)).deleteById(productId);
     }
 
     @Test
