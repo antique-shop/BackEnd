@@ -10,9 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
@@ -52,9 +50,6 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
-
-    @Column
-    private String productImage;
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
