@@ -21,30 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @Operation(summary = "회원 정보 입력", description = "사용자의 닉네임과 주소를 설정하는 API입니다.")
-    @Parameters({
-            @Parameter(name = "userId", description = "사용자 ID", required = true),
-            @Parameter(name = "nickname", description = "사용자 닉네임", required = true),
-            @Parameter(name = "address", description = "사용자 주소", required = true)
-    })
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> updateUserDetails(@RequestBody UserRequestDTO userRequestDto) {
-        Long userId = userRequestDto.getUserId();
-        // 서비스 호출
-        Long updatedUserId = userService.updateUserDetails(userId, userRequestDto);
-
-        // 성공 응답 객체 생성
-        UserResponseDTO responseDto = new UserResponseDTO(
-                updatedUserId,
-                "사용자 정보가 성공적으로 업데이트되었습니다.",
-                HttpStatus.OK.value() // HTTP 상태 코드
-        );
-
-        // 성공 응답 반환
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 변경하는 API입니다.")
+    @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 설정하는 API입니다.")
     @Parameters({
             @Parameter(name = "userId", description = "사용자 ID", required = true),
             @Parameter(name = "nickname", description = "변경할 닉네임", required = true)
@@ -59,31 +36,8 @@ public class UserController {
         // 성공 응답 객체 생성
         UserResponseDTO responseDto = new UserResponseDTO(
                 updatedUserId,
-                "닉네임이 성공적으로 변경되었습니다.",
+                "닉네임이 성공적으로 설정되었습니다.",
                 HttpStatus.OK.value()// HTTP 상태 코드
-        );
-
-        // 성공 응답 반환
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @Operation(summary = "주소 변경", description = "사용자의 주소를 변경하는 API입니다.")
-    @Parameters({
-            @Parameter(name = "userId", description = "사용자 ID", required = true),
-            @Parameter(name = "address", description = "변경할 주소", required = true)
-    })
-    @PostMapping("/updateAddress")
-    public ResponseEntity<UserResponseDTO> updateUserAddress(@RequestBody UpdateAddressDTO updateAddressDTO) {
-        Long userId = updateAddressDTO.getUserId();
-        String userAddress = updateAddressDTO.getAddress();
-        // 서비스 호출
-        Long updatedUserId = userService.updateUserAddress(userId, userAddress);
-
-        // 성공 응답 객체 생성
-        UserResponseDTO responseDto = new UserResponseDTO(
-                updatedUserId,
-                "사용자 주소가 성공적으로 변경되었습니다.",
-                HttpStatus.OK.value() // HTTP 상태 코드
         );
 
         // 성공 응답 반환

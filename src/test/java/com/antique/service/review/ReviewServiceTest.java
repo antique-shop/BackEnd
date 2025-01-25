@@ -38,8 +38,8 @@ public class ReviewServiceTest {
         Long userId = 1L;
         Long reviewedId = 2L;
 
-        User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname", "reviewerAddress");
-        User reviewedUser = TestDataFactory.createUser(2L, "reviewed@example.com", "reviewedNickname", "reviewerAddress");
+        User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname");
+        User reviewedUser = TestDataFactory.createUser(2L, "reviewed@example.com", "reviewedNickname");
         Product product = TestDataFactory.createProduct(1L, "Product1", "Old Description", 1000);
 
         Review review = TestDataFactory.createReview(product, reviewer, reviewedUser,"Great product!", LocalDateTime.parse("2025-01-23T00:00:00"), 5);
