@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +27,7 @@ public class ProductDTO {
     private String status;
 
     @Schema(description = "상품 이미지")
-    private String productImage;
+    private List<String> productImages; // 이미지 URL 리스트
 
     @Schema(description = "상품 판매자 닉네임")
     private String sellerNickName;

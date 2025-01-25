@@ -176,7 +176,9 @@ public class ProductService {
                         product.getDescription(),
                         product.getPrice(),
                         product.getStatus().toString(),
-                        product.getProductImage(),
+                        product.getProductImages().stream()
+                                .map(ProductImage::getProductImageUrl) // 이미지 URL 리스트로 변환
+                                .collect(Collectors.toList()),
                         product.getSeller().getNickname()
                 ))
                 .collect(Collectors.toList());

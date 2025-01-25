@@ -2,6 +2,7 @@ package com.antique.service.user;
 
 import com.antique.domain.Dibs;
 import com.antique.domain.Product;
+import com.antique.domain.ProductImage;
 import com.antique.domain.User;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
@@ -86,7 +87,9 @@ public class UserDibsService {
                             product.getDescription(),
                             product.getPrice(),
                             product.getStatus().name(),
-                            product.getProductImage(),
+                            product.getProductImages().stream()
+                                    .map(ProductImage::getProductImageUrl) // 이미지 URL 리스트로 변환
+                                    .collect(Collectors.toList()),
                             product.getSeller().getNickname() // 판매자 닉네임 매핑
                     );
                 })
