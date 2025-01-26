@@ -78,7 +78,7 @@ public class ReviewService {
     @Transactional
     public Review updateReview(Long reviewId, ReviewRequestDTO reviewRequest) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_IS_NOT_EXIST));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.REVIEW_IS_NOT_EXIST));
 
         review.setRating(reviewRequest.getRating());
         review.setContent(reviewRequest.getContent());
@@ -93,7 +93,7 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_IS_NOT_EXIST));
+                .orElseThrow(() -> new BaseException(CommonErrorCode.REVIEW_IS_NOT_EXIST));
 
         reviewRepository.delete(review);
     }

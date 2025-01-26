@@ -2,6 +2,8 @@ package com.antique.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE review SET is_deleted = true WHERE reviewId = ?")
+@Where(clause = "is_deleted = false")
 public class Review {
 
     @Id
@@ -40,6 +44,9 @@ public class Review {
 
     @Column
     private LocalDateTime reviewDate;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
 
     // 빌더 클래스
     public static class Builder {
