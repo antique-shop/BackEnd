@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,6 +71,9 @@ public class ReviewService {
                 .content(reviewRequest.getContent())
                 .reviewDate(LocalDateTime.now())
                 .build();
+
+        updateUserRating(reviewedUser.getUserId());
+
         return reviewRepository.save(review);
     }
 
@@ -80,9 +85,13 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.REVIEW_IS_NOT_EXIST));
 
+        Long reviewedUserId = review.getReviewedUser().getUserId();
+
         review.setRating(reviewRequest.getRating());
         review.setContent(reviewRequest.getContent());
-        review.setReviewDate(LocalDateTime.now()); // 수정 시에도 날짜를 현재로 업데이트
+        review.setReviewDate(LocalDateTime.now());
+
+        updateUserRating(reviewedUserId);
 
         return reviewRepository.save(review);
     }
@@ -95,6 +104,32 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.REVIEW_IS_NOT_EXIST));
 
+        Long reviewedUserId = review.getReviewedUser().getUserId();
+
+        updateUserRating(reviewedUserId);
+
         reviewRepository.delete(review);
+    }
+
+    /*
+    * 사용자 평점 update 메서드
+    */
+    public void updateUserRating(Long userId) {
+        List<Review> reviews = reviewRepository.findByReviewedUser_UserId(userId);
+
+        if(reviews.isEmpty()) {
+            userRepository.updateUserRating(userId, 0);
+            return;
+        }
+
+        double averageRating = reviews.stream()
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0.0);
+
+        BigDecimal roundedRating = BigDecimal.valueOf(averageRating)
+                        .setScale(1, RoundingMode.HALF_UP);
+
+        userRepository.updateUserRating(userId, roundedRating.doubleValue());
     }
 }
