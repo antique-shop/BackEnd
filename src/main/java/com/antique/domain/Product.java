@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE product SET isDeleted = true WHERE productId = ?")
-@Where(clause = "isDeleted = false")
+@SQLDelete(sql = "UPDATE product SET is_deleted = true WHERE productId = ?")
+@Where(clause = "is_deleted = false")
 public class Product {
 
     @Id

@@ -9,6 +9,7 @@ import com.antique.dto.product.ProductInfoDTO;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
 import com.antique.repository.ProductRepository;
+import com.antique.service.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

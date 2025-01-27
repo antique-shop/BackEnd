@@ -1,4 +1,4 @@
-package com.antique.controller;
+package com.antique.controller.product;
 
 import com.antique.dto.product.ProductGetDTO;
 import com.antique.dto.product.ProductDTO;
@@ -7,7 +7,7 @@ import com.antique.dto.product.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductResponseDTO;
 import com.antique.dto.product.ProductUpdateDTO;
-import com.antique.service.ProductService;
+import com.antique.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

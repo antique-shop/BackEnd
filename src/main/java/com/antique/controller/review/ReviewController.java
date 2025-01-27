@@ -1,11 +1,9 @@
-package com.antique.controller;
+package com.antique.controller.review;
 
 import com.antique.domain.Review;
-import com.antique.dto.GenericResponseDTO;
 import com.antique.dto.review.ReviewRequestDTO;
 import com.antique.dto.user.GetUserReviewDTO;
-import com.antique.service.ProductService;
-import com.antique.service.ReviewService;
+import com.antique.service.review.ReviewService;
 import com.antique.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.antique.dto.GenericResponseDTO;
+
 
 import java.util.List;
 
@@ -24,7 +24,6 @@ import java.util.List;
 public class ReviewController {
     private final UserService userService;
     private final ReviewService reviewService;
-    private final ProductService productService;
 
     /*
     * 특정 사용자 리뷰 조회
@@ -38,8 +37,8 @@ public class ReviewController {
     }
 
     /*
-    * 리뷰 작성
-    */
+     * 리뷰 작성
+     */
     @Operation(summary = "리뷰 작성 API", description = "리뷰를 작성하는 API입니다.")
     @PostMapping("/postReview")
     public ResponseEntity<GenericResponseDTO> createReview(@RequestBody ReviewRequestDTO reviewRequest) {
@@ -51,6 +50,46 @@ public class ReviewController {
                 reviewId,
                 "리뷰가 성공적으로 등록되었습니다.",
                 HttpStatus.OK.value() // HTTP 상태 코드
+        );
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+
+    /*
+     * 리뷰 수정
+     */
+    @Operation(summary = "리뷰 수정 API", description = "특정 리뷰를 수정하는 API입니다.")
+    @PutMapping("/updateReview")
+    public ResponseEntity<GenericResponseDTO> updateReview(
+            @Parameter(description = "수정할 리뷰의 ID", required = true)
+            @RequestParam Long reviewId,
+            @RequestBody ReviewRequestDTO reviewRequest) {
+        Review updatedReview = reviewService.updateReview(reviewId, reviewRequest);
+
+        GenericResponseDTO responseDto = new GenericResponseDTO(
+                reviewId,
+                "리뷰가 성공적으로 수정되었습니다.",
+                HttpStatus.OK.value()
+        );
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    /*
+     * 리뷰 삭제
+     */
+    @Operation(summary = "리뷰 삭제 API", description = "특정 리뷰를 삭제하는 API입니다.")
+    @DeleteMapping("/deleteReview")
+    public ResponseEntity<GenericResponseDTO> deleteReview(
+            @Parameter(description = "삭제할 리뷰의 ID", required = true)
+            @RequestParam Long reviewId) {
+        reviewService.deleteReview(reviewId);
+
+        GenericResponseDTO responseDto = new GenericResponseDTO(
+                reviewId,
+                "리뷰가 성공적으로 삭제되었습니다.",
+                HttpStatus.OK.value()
         );
 
         return ResponseEntity.ok(responseDto);
