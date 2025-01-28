@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -115,9 +116,30 @@ public class ProductController {
     */
     @Operation(summary = "상품명으로 상품 검색", description = "상품명으로 상품을 검색하는 API 입니다.")
     @GetMapping("/searchByProductName")
-    public List<ProductDTO> searchByProductName(
+    public ResponseEntity<List<ProductDTO>> searchByProductName(
             @Parameter(name = "productName", description = "검색하고자 하는 상품명, query string")
             @RequestParam String productName) {
-        return productService.searchByProductName(productName);
+        // 최근 검색어 저장
+        productService.saveRecentSearch(productName);
+
+        // 상품 검색
+        List<ProductDTO> products = productService.searchByProductName(productName);
+
+        return ResponseEntity.ok(products);
+    }
+
+    /*
+    최근 검색어 조회
+    */
+    @GetMapping("/getRecentSearches")
+    public ResponseEntity<List<String>> getRecentSearches() {
+        List<String> recentSearches = productService.getRecentSearches();
+
+        // 중복 제거 및 내림차순 정렬
+        List<String> uniqueSortedSearches = recentSearches.stream()
+                .distinct() // 중복 제거
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(uniqueSortedSearches);
     }
 }
