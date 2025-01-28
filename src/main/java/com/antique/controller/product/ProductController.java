@@ -135,9 +135,9 @@ public class ProductController {
     public ResponseEntity<List<String>> getRecentSearches() {
         List<String> recentSearches = productService.getRecentSearches();
 
-        // 중복 제거 및 내림차순 정렬
+        // 중복 제거
         List<String> uniqueSortedSearches = recentSearches.stream()
-                .distinct() // 중복 제거
+                .distinct()
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(uniqueSortedSearches);
