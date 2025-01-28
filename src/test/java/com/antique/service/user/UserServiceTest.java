@@ -2,7 +2,6 @@ package com.antique.service.user;
 
 import com.antique.TestDataFactory;
 import com.antique.domain.User;
-import com.antique.dto.user.UserRequestDTO;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
 import com.antique.repository.UserRepository;
@@ -14,8 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -46,5 +44,33 @@ class UserServiceTest {
 
         // 사용자 필드가 업데이트되었는지 확인
         assertThat(user.getNickname()).isEqualTo(updatedNickname);
+    }
+
+    @Test
+    void testNicknameCheck_whenNicknameExists() {
+        // Given: 이미 존재하는 닉네임 설정
+        String existingNickname = "TestUser";
+        when(userRepository.existsByNickname(existingNickname)).thenReturn(true);
+
+        // When & Then: 예외가 발생하는지 검증
+        assertThatThrownBy(() -> userService.checkNicknameDuplication(existingNickname))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(CommonErrorCode.NICKNAME_ALREADY_EXISTS.getMessage());
+
+        // Repository 호출 여부 검증
+        verify(userRepository, times(1)).existsByNickname(existingNickname);
+    }
+
+    @Test
+    void testNicknameCheck_whenNicknameDoesNotExist() {
+        // Given: 존재하지 않는 닉네임 설정
+        String nonExistingNickname = "UniqueUser";
+        when(userRepository.existsByNickname(nonExistingNickname)).thenReturn(false);
+
+        // When: 닉네임 중복 확인 메서드 호출
+        userService.checkNicknameDuplication(nonExistingNickname);
+
+        // Then: 예외가 발생하지 않고 정상적으로 실행됨을 검증
+        verify(userRepository, times(1)).existsByNickname(nonExistingNickname);
     }
 }

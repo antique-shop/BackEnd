@@ -12,6 +12,7 @@ public enum CommonErrorCode implements ErrorCode {
     DIBS_NOT_FOUND(HttpStatus.BAD_REQUEST, "요청된 사용자가 찜한 상품이 아닙니다."),
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
+    NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "해당 닉네임은 이미 사용 중입니다."),
     // Product
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
     NO_PRODUCT_BY_SEARCH(HttpStatus.NOT_FOUND, "검색명에 맞는 상품이 없습니다."),

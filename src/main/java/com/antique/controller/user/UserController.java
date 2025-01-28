@@ -1,8 +1,6 @@
 package com.antique.controller.user;
 
-import com.antique.dto.user.UpdateAddressDTO;
 import com.antique.dto.user.UpdateNicknameDTO;
-import com.antique.dto.user.UserRequestDTO;
 import com.antique.dto.user.UserResponseDTO;
 import com.antique.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -41,6 +40,22 @@ public class UserController {
         );
 
         // 성공 응답 반환
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @Operation(summary = "닉네임 중복 확인", description = "사용자의 닉네임 중복 여부를 확인하는 API입니다.")
+    @Parameter(name = "nickname", description = "중복 확인할 닉네임", required = true)
+    @GetMapping("/checkNickname")
+    public ResponseEntity<UserResponseDTO> checkNickname(@RequestParam String nickname) {
+        // 닉네임 중복 여부 확인
+        userService.checkNicknameDuplication(nickname);
+
+        // 닉네임이 사용 가능한 경우 200 반환
+        UserResponseDTO responseDto = new UserResponseDTO(
+                null,
+                "해당 닉네임은 사용 가능합니다.",
+                HttpStatus.OK.value()
+        );
         return ResponseEntity.ok(responseDto);
     }
 }

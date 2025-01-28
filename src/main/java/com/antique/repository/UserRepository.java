@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query("UPDATE User u SET u.rating = :rating WHERE u.userId = :userId")
     void updateUserRating(Long userId, double rating);
+
+    boolean existsByNickname(String nickname);
 }
