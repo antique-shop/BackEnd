@@ -15,6 +15,7 @@ import com.antique.repository.CategoryRepository;
 import com.antique.repository.ProductRepository;
 import com.antique.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,10 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+
+    private final RedisTemplate<String, String> redisTemplate;
+    private static final String RECENT_SEARCHES_KEY = "recent_searches";
+
 
     @Transactional
     public Long registerProduct(ProductRequestDTO request) {
@@ -180,5 +185,20 @@ public class ProductService {
                         product.getSeller().getNickname()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    /*
+    최근 검색어 저장
+    */
+    public void saveRecentSearch(String searchTerm) {
+        redisTemplate.opsForList().leftPush(RECENT_SEARCHES_KEY, searchTerm);
+        redisTemplate.opsForList().trim(RECENT_SEARCHES_KEY, 0, 9); // 최대 10개 저장
+    }
+
+    /*
+    최근 검색어 조회
+    */
+    public List<String> getRecentSearches() {
+        return redisTemplate.opsForList().range(RECENT_SEARCHES_KEY, 0, -1);
     }
 }
