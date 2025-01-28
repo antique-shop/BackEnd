@@ -1,7 +1,6 @@
 package com.antique.service.user;
 
 import com.antique.domain.User;
-import com.antique.dto.user.UserRequestDTO;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
 import com.antique.repository.UserRepository;
@@ -30,7 +29,9 @@ public class UserService {
 
     // 닉네임 중복 확인 메서드
     @Transactional(readOnly = true)
-    public boolean nicknameCheck(String nickname) {
-        return userRepository.existsByNickname(nickname);
+    public void checkNicknameDuplication(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new BaseException(CommonErrorCode.NICKNAME_ALREADY_EXISTS);
+        }
     }
 }

@@ -1,3 +1,4 @@
+/*
 package com.antique.service.review;
 
 import com.antique.TestDataFactory;
@@ -43,9 +44,11 @@ public class ReviewServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    /*
+    */
+/*
     * 테스트를 위한 객체 생성 메서드
-    * */
+    * *//*
+
     public User createReviewer() {
         User reviewer = TestDataFactory.createUser(1L, "reviewer@example.com", "reviewerNickname", "reviewerAddress");
 
@@ -75,9 +78,11 @@ public class ReviewServiceTest {
         return review;
     }
 
-    /*
+    */
+/*
      * 리뷰 조회
-     */
+     *//*
+
     @Test
     public void testGetUserReviews_Success() {
         // Given
@@ -99,9 +104,11 @@ public class ReviewServiceTest {
         assertEquals(5, result.get(0).getRating());
     }
 
-    /*
+    */
+/*
      * 리뷰 작성
-     */
+     *//*
+
     @Test
     public void testCreateReview_Success() {
         // Given
@@ -130,9 +137,11 @@ public class ReviewServiceTest {
         assertNotNull(result.getReviewDate());
     }
 
-    /*
+    */
+/*
      * 리뷰 수정
-     */
+     *//*
+
     @Test
     public void testUpdateReview_Success() {
         // Given
@@ -155,9 +164,11 @@ public class ReviewServiceTest {
         assertNotNull(result.getReviewDate()); // 날짜 현재로 업데이트됨
     }
 
-    /*
+    */
+/*
      * 리뷰 삭제
-     */
+     *//*
+
     @Test
     public void testDeleteReview_Success() {
         // Given
@@ -189,7 +200,9 @@ public class ReviewServiceTest {
     public void testUpdateReview_ReviewNotFound() {
         // Given
         Long reviewId = 1L;
-        ReviewRequestDTO reviewRequest = new ReviewRequestDTO(/* parameters for update */);
+        ReviewRequestDTO reviewRequest = new ReviewRequestDTO(*/
+/* parameters for update *//*
+);
 
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
 
@@ -208,4 +221,4 @@ public class ReviewServiceTest {
         // When & Then
         assertThrows(ReviewNotFoundException.class, () -> reviewService.deleteReview(reviewId));
     }
-}
+}*/

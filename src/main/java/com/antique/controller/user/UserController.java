@@ -47,24 +47,14 @@ public class UserController {
     @GetMapping("/checkNickname")
     public ResponseEntity<UserResponseDTO> checkNickname(@RequestParam String nickname) {
         // 닉네임 중복 여부 확인
-        boolean isDuplicate = userService.nicknameCheck(nickname);
+        userService.checkNicknameDuplication(nickname);
 
-        if (isDuplicate) {
-            // 닉네임이 중복된 경우 400 반환
-            UserResponseDTO responseDto = new UserResponseDTO(
-                    null,
-                    "해당 닉네임은 이미 사용 중입니다.",
-                    HttpStatus.BAD_REQUEST.value()
-            );
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
-        } else {
-            // 닉네임이 사용 가능한 경우 200 반환
-            UserResponseDTO responseDto = new UserResponseDTO(
-                    null,
-                    "해당 닉네임은 사용 가능합니다.",
-                    HttpStatus.OK.value()
-            );
-            return ResponseEntity.ok(responseDto);
-        }
+        // 닉네임이 사용 가능한 경우 200 반환
+        UserResponseDTO responseDto = new UserResponseDTO(
+                null,
+                "해당 닉네임은 사용 가능합니다.",
+                HttpStatus.OK.value()
+        );
+        return ResponseEntity.ok(responseDto);
     }
 }
