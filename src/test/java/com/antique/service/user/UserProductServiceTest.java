@@ -52,7 +52,7 @@ class UserProductServiceTest {
         Long productId = 1L;
         Long sellerUserId = 2L;
         Long categoryId = 3L;
-        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
+        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname");
         Category category = new Category(Category.CategoryName.TOPS);
         Product product = TestDataFactory.createProductWithDefaults(productId, seller, category);
 
@@ -107,7 +107,7 @@ class UserProductServiceTest {
         // Given: 존재하지 않는 카테고리 ID
         Long sellerUserId = 1L;
         Long categoryId = 999L;
-        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
+        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname");
 
         ProductRequestDTO request = TestDataFactory.createProductRequestDTOWithDefaults(sellerUserId, categoryId);
 
@@ -128,7 +128,7 @@ class UserProductServiceTest {
         Long sellerUserId = 2L;
         Long categoryId = 3L;
 
-        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
+        User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname");
         Category category = TestDataFactory.createCategory(categoryId, Category.CategoryName.TOPS);
         Product existingProduct = TestDataFactory.createProduct(productId, "Old Name", "Old Description", 1000);
 
@@ -204,7 +204,7 @@ class UserProductServiceTest {
         Long categoryId = 999L;
 
         Product existingProduct = TestDataFactory.createProduct(productId, "Old Name", "Old Description", 1000);
-        User seller = TestDataFactory.createUser(2L, "seller@example.com", "SellerNickname", "SellerAddress");
+        User seller = TestDataFactory.createUser(2L, "seller@example.com", "SellerNickname");
         ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, userId, categoryId);
         when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
         when(userRepository.findById(2L)).thenReturn(Optional.of(seller));

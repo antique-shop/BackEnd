@@ -42,7 +42,7 @@ class ProductServiceTest {
         Long categoryId = 1L;
         Long productId = 1L;
 
-        seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname", "SellerAddress");
+        seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname");
         category = TestDataFactory.createCategory(categoryId, Category.CategoryName.TOPS);
         product = TestDataFactory.createProductWithDefaults(productId, seller, category);
     }
