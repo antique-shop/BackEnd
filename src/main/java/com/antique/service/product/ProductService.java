@@ -109,7 +109,6 @@ public class ProductService {
         // 2. 판매 중이면서 삭제되지 않은 상품 조회
         List<Product> availableProducts = productRepository.findBySellerAndStatusAndIsDeleted(
                 seller, Product.Status.AVAILABLE, false);
-
         // 3. Product 엔티티를 ProductDTO로 변환하여 반환 (이미지 포함)
         return availableProducts.stream()
                 .map(product -> new ProductGetDTO(
@@ -176,7 +175,9 @@ public class ProductService {
                         product.getDescription(),
                         product.getPrice(),
                         product.getStatus().toString(),
-                        product.getProductImage(),
+                        product.getProductImages().stream()
+                                .map(ProductImage::getProductImageUrl) // 이미지 URL 리스트로 변환
+                                .collect(Collectors.toList()),
                         product.getSeller().getNickname()
                 ))
                 .collect(Collectors.toList());

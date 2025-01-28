@@ -28,54 +28,10 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-
-    @Test
-    void testUpdateUserDetails() {
-        // Given: 기존 사용자 Mock 데이터
-        User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
-        UserRequestDTO userRequestDto = TestDataFactory.createUserRequestDTO("UpdatedNickname", "Updated Address");
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
-
-        // When: UserService 호출
-        Long updatedUserId = userService.updateUserDetails(1L, userRequestDto);
-
-        // Then: 검증
-        assertThat(updatedUserId).isEqualTo(1L);
-
-        // 사용자 필드가 업데이트되었는지 확인
-        assertThat(user.getNickname()).isEqualTo("UpdatedNickname");
-        assertThat(user.getAddress()).isEqualTo("Updated Address");
-    }
-
-    @Test
-    void testUpdateUserDetails_UseridNotExist() {
-        // Given: 존재하지 않는 userId 설정
-        Long notExistUserId = 999L;
-
-        UserRequestDTO userRequestDto = TestDataFactory.createUserRequestDTO("UpdatedNickname", "Updated Address");
-
-
-        when(userRepository.findById(notExistUserId)).thenReturn(Optional.empty());
-
-        // When & Then: 예외 검증
-        BaseException exception = assertThrows(
-                BaseException.class,
-                () -> userService.updateUserDetails(notExistUserId, userRequestDto)
-        );
-
-        // 에러 코드 검증
-        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.USER_NOT_FOUND);
-
-        verify(userRepository, times(1)).findById(notExistUserId);
-        verify(userRepository, never()).save(any(User.class));
-    }
-
     @Test
     void testUpdateUserNickname() {
         // Given: 기존 사용자 Mock 데이터
-        User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
+        User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname");
 
         String updatedNickname = "NewNickname";
 
@@ -90,25 +46,5 @@ class UserServiceTest {
 
         // 사용자 필드가 업데이트되었는지 확인
         assertThat(user.getNickname()).isEqualTo(updatedNickname);
-    }
-
-    @Test
-    void testUpdateUserAddress() {
-        // Given: 기존 사용자 Mock 데이터
-        User user = TestDataFactory.createUser(1L, "test@example.com", "OldNickname", "Old Address");
-
-        String updatedAddress = "new address";
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
-
-        // When: UserService 호출
-        Long updatedUserId = userService.updateUserAddress(1L, updatedAddress);
-
-        // Then: 검증
-        assertThat(updatedUserId).isEqualTo(1L);
-
-        // 사용자 필드가 업데이트되었는지 확인
-        assertThat(user.getAddress()).isEqualTo(updatedAddress);
     }
 }

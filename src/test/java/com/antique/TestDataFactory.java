@@ -10,17 +10,16 @@ import java.util.List;
 
 
 public class TestDataFactory {
-    public static User createUser(Long userId, String email, String nickname, String address) {
+    public static User createUser(Long userId, String email, String nickname) {
         return User.builder()
                 .userId(userId)
                 .email(email)
                 .nickname(nickname)
-                .address(address)
                 .build();
     }
 
     public static User createUserWithDefault(Long userId) {
-        return createUser(userId, "default@example.com", "defaultNickname", "defaultAddress");
+        return createUser(userId, "default@example.com", "defaultNickname");
     }
 
     public static UserRequestDTO createUserRequestDTO(String nickname, String address) {
