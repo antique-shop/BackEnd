@@ -18,9 +18,9 @@ public class JwtTokenGenerator {
     private long expireTimeMilliSecond;
 
     // JWT 생성
-    public String generateToken(final String memberId) {
+    public String generateToken(final Long userId) {
         final Claims claims = Jwts.claims();
-        claims.put("memberId", memberId); // Payload에 memberId 추가
+        claims.put("userId", userId); // Payload에 userId 추가
         final Date now = new Date();
         final Date expiredDate = new Date(now.getTime() + expireTimeMilliSecond);
 
@@ -32,15 +32,14 @@ public class JwtTokenGenerator {
                 .compact();
     }
 
-    // JWT에서 memberId 추출
-    public String extractMemberId(final String token) {
+    // JWT에서 userId 추출
+    public Long extractUserId(final String token) {
         try {
-            return Jwts.parser()
+            return Long.parseLong(Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token)
                     .getBody()
-                    .get("memberId")
-                    .toString();
+                    .get("userId").toString()); // "userId" 필드를 추출하여 변환
         } catch (final Exception error) {
             throw new RuntimeException("Invalid Access Token");
         }
