@@ -36,6 +36,9 @@ public class ProductService {
     private final RedisTemplate<String, String> redisTemplate;
     private static final String RECENT_SEARCHES_KEY = "recent_searches";
 
+    public static String getRecentSearchesKey() {
+        return RECENT_SEARCHES_KEY;
+    }
 
     @Transactional
     public Long registerProduct(ProductRequestDTO request) {
@@ -169,6 +172,21 @@ public class ProductService {
         return convertToProductDTO(products);
     }
 
+    /*
+    최근 검색어 저장
+    */
+    public void saveRecentSearch(String searchTerm) {
+        redisTemplate.opsForList().leftPush(RECENT_SEARCHES_KEY, searchTerm);
+        redisTemplate.opsForList().trim(RECENT_SEARCHES_KEY, 0, 9); // 최대 10개 저장
+    }
+
+    /*
+    최근 검색어 조회
+    */
+    public List<String> getRecentSearches() {
+        return redisTemplate.opsForList().range(RECENT_SEARCHES_KEY, 0, -1);
+    }
+
 
     /*
     응답 dto에 맞게 변환하는 메서드 (상품 전체 목록 조회 / 상품 카테고리별 목록 조회 API에 사용)
@@ -185,20 +203,5 @@ public class ProductService {
                         product.getSeller().getNickname()
                 ))
                 .collect(Collectors.toList());
-    }
-
-    /*
-    최근 검색어 저장
-    */
-    public void saveRecentSearch(String searchTerm) {
-        redisTemplate.opsForList().leftPush(RECENT_SEARCHES_KEY, searchTerm);
-        redisTemplate.opsForList().trim(RECENT_SEARCHES_KEY, 0, 9); // 최대 10개 저장
-    }
-
-    /*
-    최근 검색어 조회
-    */
-    public List<String> getRecentSearches() {
-        return redisTemplate.opsForList().range(RECENT_SEARCHES_KEY, 0, -1);
     }
 }
