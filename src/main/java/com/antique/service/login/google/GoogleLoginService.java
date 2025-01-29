@@ -6,6 +6,7 @@ import com.antique.dto.login.google.GoogleLoginDTO;
 import com.antique.dto.user.UserResponseDTO;
 import com.antique.repository.UserRepository;
 import com.antique.service.jwt.JwtTokenGenerator;
+import com.antique.service.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class GoogleLoginService {
 
     private final UserRepository userRepository;
     private final JwtTokenGenerator jwtTokenGenerator;
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * Google OAuth 로그인 및 회원가입 처리 메서드
@@ -36,6 +38,9 @@ public class GoogleLoginService {
         // JWT 발급 (Access Token & Refresh Token)
         String accessToken = jwtTokenGenerator.generateAccessToken(user.getUserId());
         String refreshToken = jwtTokenGenerator.generateRefreshToken(user.getUserId());
+
+        // Refresh Token을 Redis에 저장
+        refreshTokenService.saveRefreshToken(user.getUserId(), refreshToken);
 
         // 응답 DTO 생성
         String message = isNewUser.get() ? "회원가입이 완료되었습니다." : "로그인 성공";

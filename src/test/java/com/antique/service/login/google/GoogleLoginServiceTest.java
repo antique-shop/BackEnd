@@ -3,9 +3,11 @@ package com.antique.service.login.google;
 import com.antique.TestDataFactory;
 import com.antique.domain.User;
 import com.antique.dto.login.google.GoogleAccountProfileResponse;
+import com.antique.dto.login.google.GoogleLoginDTO;
 import com.antique.dto.user.UserResponseDTO;
 import com.antique.repository.UserRepository;
 import com.antique.service.jwt.JwtTokenGenerator;
+import com.antique.service.jwt.RefreshTokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,9 @@ class GoogleLoginServiceTest {
 
     @Mock
     private JwtTokenGenerator jwtTokenGenerator;
+
+    @Mock
+    private RefreshTokenService refreshTokenService;
 
     @InjectMocks
     private GoogleLoginService googleLoginService;
@@ -50,18 +55,25 @@ class GoogleLoginServiceTest {
     void 로그인_성공_기존_사용자() {
         // given
         when(userRepository.findByEmail(googleProfile.getEmail())).thenReturn(Optional.of(existingUser));
-        when(jwtTokenGenerator.generateToken(existingUser.getUserId().toString())).thenReturn("mocked-jwt-token");
+        when(jwtTokenGenerator.generateAccessToken(existingUser.getUserId())).thenReturn("mocked-access-token");
+        when(jwtTokenGenerator.generateRefreshToken(existingUser.getUserId())).thenReturn("mocked-refresh-token");
+
+        // Refresh Token 저장 동작 Mock 설정
+        doNothing().when(refreshTokenService).saveRefreshToken(existingUser.getUserId(), "mocked-refresh-token");
 
         // when
-        UserResponseDTO response = googleLoginService.loginOrRegisterUser(googleProfile);
+        GoogleLoginDTO response = googleLoginService.loginOrRegisterUser(googleProfile);
 
         // then
         assertThat(response.getMessage()).isEqualTo("로그인 성공");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getJwtToken()).isEqualTo("mocked-jwt-token");
+        assertThat(response.getAccessToken()).isEqualTo("mocked-access-token");
+        assertThat(response.getRefreshToken()).isEqualTo("mocked-refresh-token");
 
         verify(userRepository, times(1)).findByEmail(googleProfile.getEmail());
-        verify(jwtTokenGenerator, times(1)).generateToken(existingUser.getUserId().toString());
+        verify(jwtTokenGenerator, times(1)).generateAccessToken(existingUser.getUserId());
+        verify(jwtTokenGenerator, times(1)).generateRefreshToken(existingUser.getUserId());
+        verify(refreshTokenService, times(1)).saveRefreshToken(existingUser.getUserId(), "mocked-refresh-token");
     }
 
     @Test
@@ -72,18 +84,25 @@ class GoogleLoginServiceTest {
 
         when(userRepository.findByEmail(newGoogleProfile.getEmail())).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(newUser);
-        when(jwtTokenGenerator.generateToken(newUser.getUserId().toString())).thenReturn("mocked-jwt-token");
+        when(jwtTokenGenerator.generateAccessToken(newUser.getUserId())).thenReturn("mocked-access-token");
+        when(jwtTokenGenerator.generateRefreshToken(newUser.getUserId())).thenReturn("mocked-refresh-token");
+
+        // Refresh Token 저장 동작 Mock 설정
+        doNothing().when(refreshTokenService).saveRefreshToken(newUser.getUserId(), "mocked-refresh-token");
 
         // when
-        UserResponseDTO response = googleLoginService.loginOrRegisterUser(newGoogleProfile);
+        GoogleLoginDTO response = googleLoginService.loginOrRegisterUser(newGoogleProfile);
 
         // then
         assertThat(response.getMessage()).isEqualTo("회원가입이 완료되었습니다.");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.getJwtToken()).isEqualTo("mocked-jwt-token");
+        assertThat(response.getAccessToken()).isEqualTo("mocked-access-token");
+        assertThat(response.getRefreshToken()).isEqualTo("mocked-refresh-token");
 
         verify(userRepository, times(1)).findByEmail(newGoogleProfile.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
-        verify(jwtTokenGenerator, times(1)).generateToken(newUser.getUserId().toString());
+        verify(jwtTokenGenerator, times(1)).generateAccessToken(newUser.getUserId());
+        verify(jwtTokenGenerator, times(1)).generateRefreshToken(newUser.getUserId());
+        verify(refreshTokenService, times(1)).saveRefreshToken(newUser.getUserId(), "mocked-refresh-token");
     }
 }
