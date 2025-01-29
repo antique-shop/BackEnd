@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLDecoder;
@@ -37,32 +38,50 @@ public class GoogleClient {
 
     private final RestTemplate restTemplate;
 
+    /**
+     * Google OAuth 로그인 후 사용자 프로필 가져오기
+     */
+    @Transactional(readOnly = true)
     public GoogleAccountProfileResponse getGoogleAccountProfile(final String code) {
-        final String accessToken = requestGoogleAccessToken(code);
+        String accessToken = requestGoogleAccessToken(code);
         return requestGoogleAccountProfile(accessToken);
     }
 
+    /**
+     * Google OAuth Access Token 요청
+     */
     public String requestGoogleAccessToken(final String code) {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
-        final HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(
-                new GoogleAccessTokenRequest(decodedCode, clientId, clientSecret, redirectUri, authorizationCode),
-                headers
+
+        GoogleAccessTokenRequest requestBody = new GoogleAccessTokenRequest(
+                decodedCode, clientId, clientSecret, redirectUri, authorizationCode
         );
-        final GoogleAccessTokenResponse response = restTemplate.exchange(
+
+        HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(requestBody, headers);
+
+        GoogleAccessTokenResponse response = restTemplate.exchange(
                 accessTokenUrl, HttpMethod.POST, httpEntity, GoogleAccessTokenResponse.class
         ).getBody();
+
         return Optional.ofNullable(response)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.GOOGLE_TOKEN_REQUEST_FAILED))
                 .getAccessToken();
     }
 
+    /**
+     * Google API에서 사용자 정보 가져오기
+     */
     GoogleAccountProfileResponse requestGoogleAccountProfile(final String accessToken) {
-        final HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
-        return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, GoogleAccountProfileResponse.class)
-                .getBody();
+
+        HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+
+        return restTemplate.exchange(
+                profileUrl, HttpMethod.GET, httpEntity, GoogleAccountProfileResponse.class
+        ).getBody();
     }
 }
