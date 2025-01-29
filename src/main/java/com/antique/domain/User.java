@@ -24,8 +24,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    private String address;
-
+    @Column(unique = true)
     private String nickname;
 
     @Column(nullable = false)
@@ -36,6 +35,7 @@ public class User {
     private int points; // 적립금
 
     private int transactionCount; // 거래 횟수
+    // 판매할 때도 늘어나고, 구매할 때도 늘어난다.
 
     private float rating; // 평점
 
@@ -55,14 +55,6 @@ public class User {
     public void updateNickname(String nickname)
     {
         this.nickname = nickname;
-    }
-
-    public void updateAddress(String address)
-    { this.address = address; }
-
-    public void updateNicknameAndAddress(String nickname, String address) {
-        this.nickname = nickname;
-        this.address = address;
     }
 }
 
