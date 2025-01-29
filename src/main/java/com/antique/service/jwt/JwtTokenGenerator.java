@@ -10,7 +10,6 @@ import java.util.Date;
 
 @Component
 public class JwtTokenGenerator {
-
     @Value("${jwt.secret-key}")
     private String secretKey;
 
