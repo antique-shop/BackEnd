@@ -37,7 +37,8 @@ public class UserController {
         UserResponseDTO responseDto = new UserResponseDTO(
                 updatedUserId,
                 "닉네임이 성공적으로 설정되었습니다.",
-                HttpStatus.OK.value()// HTTP 상태 코드
+                HttpStatus.OK.value(),// HTTP 상태 코드,
+                null
         );
 
         // 성공 응답 반환
@@ -55,7 +56,8 @@ public class UserController {
         UserResponseDTO responseDto = new UserResponseDTO(
                 null,
                 "해당 닉네임은 사용 가능합니다.",
-                HttpStatus.OK.value()
+                HttpStatus.OK.value(),
+                null
         );
         return ResponseEntity.ok(responseDto);
     }
