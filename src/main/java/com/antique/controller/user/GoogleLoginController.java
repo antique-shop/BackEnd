@@ -2,7 +2,6 @@ package com.antique.controller.user;
 
 import com.antique.dto.login.google.GoogleAccountProfileResponse;
 import com.antique.dto.login.google.GoogleLoginDTO;
-import com.antique.dto.user.UserResponseDTO;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
 import com.antique.service.login.google.GoogleClient;
