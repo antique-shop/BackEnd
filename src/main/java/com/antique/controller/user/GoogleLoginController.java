@@ -1,6 +1,7 @@
 package com.antique.controller.user;
 
 import com.antique.dto.login.google.GoogleAccountProfileResponse;
+import com.antique.dto.login.google.GoogleLoginDTO;
 import com.antique.dto.user.UserResponseDTO;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
@@ -53,9 +54,9 @@ public class GoogleLoginController {
      */
     @Operation(summary = "Google OAuth 로그인", description = "Google 인증 후 받은 code를 통해 로그인 또는 회원가입을 처리합니다.")
     @GetMapping("/oauth2/callback")
-    public ResponseEntity<UserResponseDTO> handleGoogleLogin(@RequestParam String code) {
+    public ResponseEntity<GoogleLoginDTO> handleGoogleLogin(@RequestParam String code) {
         GoogleAccountProfileResponse googleProfile = googleClient.getGoogleAccountProfile(code);
-        UserResponseDTO response = googleLoginService.loginOrRegisterUser(googleProfile);
+        GoogleLoginDTO response = googleLoginService.loginOrRegisterUser(googleProfile);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }
