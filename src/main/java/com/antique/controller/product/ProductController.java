@@ -131,6 +131,7 @@ public class ProductController {
     /*
     최근 검색어 조회
     */
+    @Operation(summary = "최근 검색어 조회", description = "최근 검색어를 조회하는 API 입니다.")
     @GetMapping("/getRecentSearches")
     public ResponseEntity<List<String>> getRecentSearches() {
         List<String> recentSearches = productService.getRecentSearches();
