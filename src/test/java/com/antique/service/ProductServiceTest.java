@@ -201,18 +201,19 @@ class ProductServiceTest {
     @Test
     public void testSaveRecentSearch() {
         // Given
+        Long userId = 1L;
         String searchTerm = "Test Product";
 
         // When
-        productService.saveRecentSearch(searchTerm);
+        productService.saveRecentSearch(userId, searchTerm);
 
         // Then
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(listOperations).leftPush(eq(ProductService.getRecentSearchesKey()), captor.capture());
+        verify(listOperations).leftPush(eq("recent_searches:" + userId), captor.capture());
         assertEquals(searchTerm, captor.getValue());
 
         // Verify that the list is trimmed to a maximum of 10 items
-        verify(listOperations).trim(ProductService.getRecentSearchesKey(), 0, 9);
+        verify(listOperations).trim("recent_searches:" + userId, 0, 9);
     }
 
     /*
@@ -221,11 +222,12 @@ class ProductServiceTest {
     @Test
     public void testGetRecentSearches() {
         // Given
+        Long userId = 1L;
         List<String> recentSearches = Arrays.asList("Product 1", "Product 2", "Product 3");
-        when(listOperations.range(ProductService.getRecentSearchesKey(), 0, -1)).thenReturn(recentSearches);
+        when(listOperations.range("recent_searches:" + userId, 0, -1)).thenReturn(recentSearches);
 
         // When
-        List<String> result = productService.getRecentSearches();
+        List<String> result = productService.getRecentSearches(userId);
 
         // Then
         assertNotNull(result);
