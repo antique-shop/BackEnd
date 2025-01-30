@@ -13,21 +13,32 @@ import com.antique.service.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private RedisTemplate<String, String> redisTemplate;
+
+    @Mock
+    private ListOperations<String, String> listOperations; // ListOperations Mock 추가
 
     @InjectMocks
     private ProductService productService;
@@ -45,6 +56,9 @@ class ProductServiceTest {
         seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname");
         category = TestDataFactory.createCategory(categoryId, Category.CategoryName.TOPS);
         product = TestDataFactory.createProductWithDefaults(productId, seller, category);
+
+        // RedisTemplate의 opsForList()가 ListOperations를 반환하도록 설정
+        when(redisTemplate.opsForList()).thenReturn(listOperations);
     }
 
     /*
@@ -62,6 +76,9 @@ class ProductServiceTest {
         assertNotNull(productDTOs);
         assertEquals(1, productDTOs.size());
         assertEquals(product.getProductId(), productDTOs.get(0).getProductId());
+
+        lenient().when(redisTemplate.opsForList()).thenReturn(listOperations);
+
     }
 
     /*
@@ -80,6 +97,8 @@ class ProductServiceTest {
         assertNotNull(productDTOs);
         assertEquals(1, productDTOs.size());
         assertEquals(product.getProductId(), productDTOs.get(0).getProductId());
+
+        lenient().when(redisTemplate.opsForList()).thenReturn(listOperations);
     }
 
 
@@ -106,6 +125,9 @@ class ProductServiceTest {
         assertEquals("Default Description", productInfo.getDescription());
         assertEquals(100000, productInfo.getPrice());
         assertEquals("SellerNickname", productInfo.getSellerNickname());
+
+        lenient().when(redisTemplate.opsForList()).thenReturn(listOperations);
+
     }
 
     /*
@@ -125,6 +147,8 @@ class ProductServiceTest {
         );
 
         assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.PRODUCT_NOT_FOUND);
+
+        lenient().when(redisTemplate.opsForList()).thenReturn(listOperations);
     }
 
 
@@ -145,6 +169,8 @@ class ProductServiceTest {
         assertNotNull(productDTOs);
         assertEquals(1, productDTOs.size());
         assertEquals(product.getProductId(), productDTOs.get(0).getProductId());
+
+        lenient().when(redisTemplate.opsForList()).thenReturn(listOperations);
     }
 
     /*
@@ -164,5 +190,48 @@ class ProductServiceTest {
         );
 
         assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.NO_PRODUCT_BY_SEARCH);
+
+        // lenient()를 사용하여 이 모킹이 실제 테스트에서 사용되지 않더라도 Mockito가 이를 불필요한 모킹으로 간주하지 않게 함
+        lenient().when(redisTemplate.opsForList()).thenReturn(listOperations);
+    }
+
+    /*
+    * 최근 검색어 저장
+    */
+    @Test
+    public void testSaveRecentSearch() {
+        // Given
+        Long userId = 1L;
+        String searchTerm = "Test Product";
+
+        // When
+        productService.saveRecentSearch(userId, searchTerm);
+
+        // Then
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(listOperations).leftPush(eq("recent_searches:" + userId), captor.capture());
+        assertEquals(searchTerm, captor.getValue());
+
+        // Verify that the list is trimmed to a maximum of 10 items
+        verify(listOperations).trim("recent_searches:" + userId, 0, 9);
+    }
+
+    /*
+    * 최근 검색어 조회
+    */
+    @Test
+    public void testGetRecentSearches() {
+        // Given
+        Long userId = 1L;
+        List<String> recentSearches = Arrays.asList("Product 1", "Product 2", "Product 3");
+        when(listOperations.range("recent_searches:" + userId, 0, -1)).thenReturn(recentSearches);
+
+        // When
+        List<String> result = productService.getRecentSearches(userId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        assertEquals(recentSearches, result);
     }
 }
