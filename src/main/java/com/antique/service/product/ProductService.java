@@ -34,11 +34,6 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
     private final RedisTemplate<String, String> redisTemplate;
-    private static final String RECENT_SEARCHES_KEY = "recent_searches";
-
-    public static String getRecentSearchesKey() {
-        return RECENT_SEARCHES_KEY;
-    }
 
     @Transactional
     public Long registerProduct(ProductRequestDTO request) {
@@ -175,16 +170,18 @@ public class ProductService {
     /*
     최근 검색어 저장
     */
-    public void saveRecentSearch(String searchTerm) {
-        redisTemplate.opsForList().leftPush(RECENT_SEARCHES_KEY, searchTerm);
-        redisTemplate.opsForList().trim(RECENT_SEARCHES_KEY, 0, 9); // 최대 10개 저장
+    public void saveRecentSearch(Long userId, String searchTerm) {
+        String key = "recent_searches:" + userId.toString(); // 사용자별 키 생성
+        redisTemplate.opsForList().leftPush(key, searchTerm);
+        redisTemplate.opsForList().trim(key, 0, 9); // 최대 10개 저장
     }
 
     /*
     최근 검색어 조회
     */
-    public List<String> getRecentSearches() {
-        return redisTemplate.opsForList().range(RECENT_SEARCHES_KEY, 0, -1);
+    public List<String> getRecentSearches(Long userId) {
+        String key = "recent_searches:" + userId.toString(); // 사용자별 키 생성
+        return redisTemplate.opsForList().range(key, 0, -1);
     }
 
 
