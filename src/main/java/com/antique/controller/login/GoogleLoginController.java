@@ -1,4 +1,4 @@
-package com.antique.controller.user;
+package com.antique.controller.login;
 
 import com.antique.dto.login.google.GoogleAccountProfileResponse;
 import com.antique.dto.login.google.GoogleLoginDTO;

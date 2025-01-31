@@ -16,6 +16,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                  "/api/v1/login/**", "/api/v1/oauth2/callback",// 로그인 관련 API 허용
+                                "/swagger-ui/**", "/v3/api-docs/**",
+                                "/api/v1/auth/refresh"// Swagger UI 및 OpenAPI 문서 허용
                                 "/api/v1/**",
                                 "/swagger-ui/**", "/v3/api-docs/**" // Swagger UI 및 OpenAPI 문서 허용
                         ).permitAll()
