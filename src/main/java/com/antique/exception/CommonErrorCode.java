@@ -20,7 +20,9 @@ public enum CommonErrorCode implements ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자의 리뷰가 존재하지 않습니다."),
     REVIEW_IS_NOT_EXIST(HttpStatus.NOT_FOUND, "해당 리뷰가 존재하지 않습니다."),
     // 기타
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
+    GOOGLE_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST, "Google Access Token 요청에 실패했습니다."),
+    GOOGLE_REDIRECT_FAILED(HttpStatus.BAD_REQUEST, "Google 리다이렉트 요청에 실패했습니다.");
 
 
     private final HttpStatus status;

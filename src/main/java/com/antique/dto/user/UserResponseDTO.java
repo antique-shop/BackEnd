@@ -11,4 +11,5 @@ public class UserResponseDTO {
     private Long userId;      // 업데이트된 사용자 ID
     private String message;   // 응답 메시지
     private int statusCode;   // HTTP 상태 코드
+    private String jwtToken; // 발급된 jwt 토큰
 }

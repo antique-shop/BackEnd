@@ -27,9 +27,6 @@ public class User {
     @Column(unique = true)
     private String nickname;
 
-    @Column(nullable = false)
-    private String password;
-
     private String grade; // 등급
 
     private int points; // 적립금
