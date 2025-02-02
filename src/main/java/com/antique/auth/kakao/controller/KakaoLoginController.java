@@ -2,7 +2,7 @@ package com.antique.auth.kakao.controller;
 
 import com.antique.auth.kakao.dto.KakaoLoginResponseDTO;
 import com.antique.auth.kakao.dto.KakaoUserInfoResponseDTO;
-import com.antique.auth.kakao.service.KakaoService;
+import com.antique.auth.kakao.service.KakaoLoginService;
 import com.antique.domain.User;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
@@ -37,7 +37,7 @@ public class KakaoLoginController {
     @Value("${kakao.redirect_uri}")
     private String redirect_uri;
 
-    private final KakaoService kakaoService;
+    private final KakaoLoginService kakaoService;
     private final JwtTokenGenerator jwtTokenGenerator;
     private final RefreshTokenService refreshTokenService;
 

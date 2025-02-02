@@ -18,14 +18,14 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class KakaoService {
+public class KakaoLoginService {
     private String clientId;
     private final String KAUTH_TOKEN_URL_HOST;
     private final String KAUTH_USER_URL_HOST;
     private final UserRepository userRepository;
 
     @Autowired
-    public KakaoService(@Value("${kakao.client_id}") String clientId, UserRepository userRepository) {
+    public KakaoLoginService(@Value("${kakao.client_id}") String clientId, UserRepository userRepository) {
         this.clientId = clientId;
         this.userRepository = userRepository;
         KAUTH_TOKEN_URL_HOST ="https://kauth.kakao.com";
@@ -93,5 +93,4 @@ public class KakaoService {
                     return userRepository.save(newUser);
                 });
     }
-
 }
