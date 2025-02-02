@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Transactional
@@ -13,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updateUserRating(Long userId, double rating);
 
     boolean existsByNickname(String nickname);
+
+    Optional<User> findByEmail(String email);
 }
