@@ -9,8 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 /*
- * 사용자가 동의한 항목만 담겨지고, 동의하지 않은 항목은 null로 들어오게 됨
- */
+* 사용자가 동의한 항목만 담겨지고, 동의하지 않은 항목은 null로 들어오게 됨
+*/
 @Getter
 @NoArgsConstructor //역직렬화를 위한 기본 생성자
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -171,16 +171,20 @@ public class KakaoUserInfoResponseDTO {
             //프로필 사진 URL
             @JsonProperty("profile_image_url")
             public String profileImageUrl;
+
             //프로필 사진 URL 기본 프로필인지 여부
             //true : 기본 프로필, false : 사용자 등록
             @JsonProperty("is_default_image")
             public String isDefaultImage;
+
             //닉네임이 기본 닉네임인지 여부
             //true : 기본 닉네임, false : 사용자 등록
             @JsonProperty("is_default_nickname")
             public Boolean isDefaultNickName;
+
         }
     }
+
     @Getter
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
