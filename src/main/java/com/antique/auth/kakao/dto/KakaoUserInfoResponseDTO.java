@@ -2,6 +2,7 @@ package com.antique.auth.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import java.util.HashMap;
 /*
 * 사용자가 동의한 항목만 담겨지고, 동의하지 않은 항목은 null로 들어오게 됨
 */
-@Getter
+@Data
 @NoArgsConstructor //역직렬화를 위한 기본 생성자
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoUserInfoResponseDTO {
