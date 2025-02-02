@@ -4,10 +4,15 @@ import com.antique.auth.kakao.dto.KakaoLoginResponseDTO;
 import com.antique.auth.kakao.dto.KakaoUserInfoResponseDTO;
 import com.antique.auth.kakao.service.KakaoService;
 import com.antique.domain.User;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.jwt.RefreshTokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +21,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 /*
 * Redirect된 URL에 전달된 code를 가져오기 위함
 */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/kakaoLogin")
 public class KakaoLoginController {
+    @Value("${kakao.client_id}")
+    private String client_id;
+
+    @Value("${kakao.redirect_uri}")
+    private String redirect_uri;
+
     private final KakaoService kakaoService;
     private final JwtTokenGenerator jwtTokenGenerator;
     private final RefreshTokenService refreshTokenService;
 
+    /*
+     * 카카오 로그인 페이지로 리디렉트
+     */
+    @Operation(summary = "카카오 로그인 페이지로 이동", description = "사용자를 카카오 OAuth 로그인 페이지로 리디렉트합니다.")
+    @GetMapping("/page")
+    public void kakaoLogin(HttpServletResponse response) {
+        String kakaoLoginUrl = "https://kauth.kakao.com/oauth/authorize"
+                + "?response_type=code"
+                + "&client_id=" + client_id
+                + "&redirect_uri=" + redirect_uri;
+        try {
+            response.sendRedirect(kakaoLoginUrl);
+        } catch (IOException e) {
+            throw new BaseException(CommonErrorCode.KAKAO_REDIRECT_FAILED);
+        }
+    }
+
+    /*
+     * 카카오 로그인 및 회원가입
+     */
+    @Operation(summary = "카카오 로그인 및 회원가입", description = "카카오 서버로부터 받은 code를 통해 로그인 및 회원가입을 처리합니다.")
     @GetMapping(value = "/callback", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> callback(@RequestParam("code") String code) {
         try {
