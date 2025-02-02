@@ -88,6 +88,7 @@ public class KakaoService {
                 .orElseGet(() -> {
                     User newUser = User.builder()
                             .email(userInfo.getKakaoAccount().getEmail())
+                            .isDeleted(false)
                             .build();
                     return userRepository.save(newUser);
                 });
