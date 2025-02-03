@@ -9,6 +9,7 @@ import com.antique.exception.CommonErrorCode;
 import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.jwt.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "카카오 로그인 및 회원가입", description = "카카오 로그인 및 회원가입을 처리합니다.")
 @RequestMapping("/api/v1/kakaoLogin")
 public class KakaoLoginController {
     @Value("${kakao.client_id}")
