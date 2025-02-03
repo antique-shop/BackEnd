@@ -2,6 +2,7 @@ package com.antique.auth.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,10 +28,10 @@ public class KakaoUserInfoResponseDTO {
     @JsonProperty("kakao_account")
     public KakaoAccount kakaoAccount;
 
-    @Getter
+    @Data
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class KakaoAccount {
+    public static class KakaoAccount {
         //사용자 프로필 정보
         @JsonProperty("profile")
         public Profile profile;
@@ -44,10 +45,11 @@ public class KakaoUserInfoResponseDTO {
         public String email;
 
 
-        @Getter
+        @Data
         @NoArgsConstructor
+        @AllArgsConstructor
         @JsonIgnoreProperties(ignoreUnknown = true)
-        public class Profile {
+        public static class Profile {
 
             //닉네임
             @JsonProperty("nickname")
