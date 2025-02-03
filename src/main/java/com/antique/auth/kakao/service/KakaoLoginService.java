@@ -3,6 +3,8 @@ package com.antique.auth.kakao.service;
 import com.antique.auth.kakao.dto.KakaoTokenResponseDTO;
 import com.antique.auth.kakao.dto.KakaoUserInfoResponseDTO;
 import com.antique.domain.User;
+import com.antique.exception.BaseException;
+import com.antique.exception.CommonErrorCode;
 import com.antique.repository.UserRepository;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +46,16 @@ public class KakaoLoginService {
                         .build(true))
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
-                //TODO : Custom Exception
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                    // 4xx 에러 발생 시 BaseException으로 변환
+                    return clientResponse.bodyToMono(String.class)
+                            .flatMap(responseBody -> Mono.error(new BaseException(CommonErrorCode.INVALID_PARAMETER)));
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
+                    // 5xx 에러 발생 시 BaseException으로 변환
+                    return clientResponse.bodyToMono(String.class)
+                            .flatMap(responseBody -> Mono.error(new BaseException(CommonErrorCode.INTERNAL_SERVER_ERROR)));
+                })
                 .bodyToMono(KakaoTokenResponseDTO.class)
                 .block();
 
@@ -71,8 +80,16 @@ public class KakaoLoginService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // access token 인가
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                    // 4xx 에러 발생 시 BaseException으로 변환
+                    return clientResponse.bodyToMono(String.class)
+                            .flatMap(responseBody -> Mono.error(new BaseException(CommonErrorCode.INVALID_PARAMETER)));
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
+                    // 5xx 에러 발생 시 BaseException으로 변환
+                    return clientResponse.bodyToMono(String.class)
+                            .flatMap(responseBody -> Mono.error(new BaseException(CommonErrorCode.INTERNAL_SERVER_ERROR)));
+                })
                 .bodyToMono(KakaoUserInfoResponseDTO.class)
                 .block();
 
