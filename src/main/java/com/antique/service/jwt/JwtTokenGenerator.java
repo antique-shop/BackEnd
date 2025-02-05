@@ -55,10 +55,13 @@ public class JwtTokenGenerator {
      */
     public Long extractUserId(final String token) {
         try {
+            // Bearer 접두사 제거
+            String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+
             return Long.parseLong(Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
                     .build()
-                    .parseClaimsJws(token)
+                    .parseClaimsJws(jwtToken)
                     .getBody()
                     .getSubject());
         } catch (JwtException e) {
