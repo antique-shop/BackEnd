@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoLoginResponseDTO {
-    private User user;
+    private String email;
     private String jwtToken;
     private String refreshToken;
 }

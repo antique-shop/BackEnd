@@ -3,6 +3,7 @@ package com.antique.controller.review;
 import com.antique.domain.Review;
 import com.antique.dto.review.ReviewRequestDTO;
 import com.antique.dto.user.GetUserReviewDTO;
+import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.review.ReviewService;
 import com.antique.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,8 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "review API", description = "리뷰와 관련된 API 목록 입니다.")
 public class ReviewController {
-    private final UserService userService;
     private final ReviewService reviewService;
+    private final JwtTokenGenerator jwtTokenGenerator;
 
     /*
     * 특정 사용자 리뷰 조회
@@ -31,8 +32,10 @@ public class ReviewController {
     @Operation(summary = "특정 사용자 리뷰 조회 API", description = "특정 사용자의 리뷰를 조회하는 API입니다.")
     @GetMapping("/getUserReviews")
     public List<GetUserReviewDTO> getUserReviews(
-            @Parameter(description="리뷰를 조회하고 싶은 사용자의 ID", required = true)
-            @RequestParam Long userId) {
+            @Parameter(description = "JWT Access Token", required = true)
+            @RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenGenerator.extractUserId(token); // JWT에서 userId 추출
+
         return reviewService.getUserReviews(userId);
     }
 

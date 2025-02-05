@@ -76,6 +76,8 @@ public class KakaoLoginController {
             // 사용자 정보를 기반으로 등록 또는 로그인
             User user = kakaoService.registerOrLoginUser(userInfo);
 
+            String email = user.getEmail();
+
             // JWT 생성
             String jwtToken = jwtTokenGenerator.generateAccessToken(user.getUserId());
             String refreshToken = jwtTokenGenerator.generateRefreshToken(user.getUserId()); // 리프레시 토큰 생성
@@ -84,7 +86,7 @@ public class KakaoLoginController {
             refreshTokenService.saveRefreshToken(user.getUserId(), refreshToken);
 
             // 로그인 성공 시 사용자 정보와 JWT를 반환
-            return new ResponseEntity<>(new KakaoLoginResponseDTO(user, jwtToken, refreshToken), HttpStatus.OK);
+            return new ResponseEntity<>(new KakaoLoginResponseDTO(email, jwtToken, refreshToken), HttpStatus.OK);
         } catch (Exception e) {
             // 예외 발생 시 적절한 에러 메시지를 반환합니다.
             return new ResponseEntity<>("Login failed: " + e.getMessage(), HttpStatus.BAD_REQUEST);
