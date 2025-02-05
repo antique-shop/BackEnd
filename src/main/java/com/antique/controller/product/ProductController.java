@@ -7,6 +7,7 @@ import com.antique.dto.product.ProductInfoDTO;
 import com.antique.dto.product.ProductRequestDTO;
 import com.antique.dto.product.ProductResponseDTO;
 import com.antique.dto.product.ProductUpdateDTO;
+import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     private final ProductService productService;
+    private final JwtTokenGenerator jwtTokenGenerator;
 
     @Operation(summary = "상품 등록", description = "사용자가 새로운 상품을 등록하는 API입니다.")
     @PostMapping("/register")
@@ -74,8 +76,9 @@ public class ProductController {
     @Operation(summary = "사용자가 판매 중인 상품 조회", description = "사용자가 판매 중인 상품 목록을 조회하는 API입니다.")
     @GetMapping("/getByUserId")
     public ResponseEntity<List<ProductGetDTO>> getProductsByUserId(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId) {
+            @Parameter(description = "JWT Access Token", required = true)
+            @RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenGenerator.extractUserId(token); // JWT에서 userId 추출
         List<ProductGetDTO> products = productService.getProductByUserId(userId);
         return ResponseEntity.ok(products);
     }
@@ -117,10 +120,13 @@ public class ProductController {
     @Operation(summary = "상품명으로 상품 검색", description = "상품명으로 상품을 검색하는 API 입니다.")
     @GetMapping("/searchByProductName")
     public ResponseEntity<List<ProductDTO>> searchByProductName(
-            @Parameter(name = "userId", description = "사용자 ID")
-            @RequestParam Long userId,
+            @Parameter(description = "JWT Access Token", required = true)
+            @RequestHeader("Authorization") String token,
             @Parameter(name = "productName", description = "검색하고자 하는 상품명, query string")
             @RequestParam String productName) {
+
+        Long userId = jwtTokenGenerator.extractUserId(token); // JWT에서 userId 추출
+
         // 최근 검색어 저장
         productService.saveRecentSearch(userId, productName);
 
@@ -136,8 +142,11 @@ public class ProductController {
     @Operation(summary = "최근 검색어 조회", description = "최근 검색어를 조회하는 API 입니다.")
     @GetMapping("/getRecentSearches")
     public ResponseEntity<List<String>> getRecentSearches(
-            @Parameter(name = "userId", description = "사용자 ID")
-            @RequestParam Long userId) {
+            @Parameter(description = "JWT Access Token", required = true)
+            @RequestHeader("Authorization") String token) {
+
+        Long userId = jwtTokenGenerator.extractUserId(token); // JWT에서 userId 추출
+
         List<String> recentSearches = productService.getRecentSearches(userId);
 
         // 중복 제거
