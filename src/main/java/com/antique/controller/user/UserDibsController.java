@@ -1,7 +1,7 @@
 package com.antique.controller.user;
 
+import com.antique.dto.dibs.DibsProductDTO;
 import com.antique.dto.dibs.DibsResponseDTO;
-import com.antique.dto.product.ProductDTO;
 import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.user.UserDibsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,13 +55,13 @@ public class UserDibsController {
             @Parameter(name = "Authorization", description = "JWT Access Token", required = true)
     })
     @GetMapping("/getDibs")
-    public ResponseEntity<List<ProductDTO>> getUserDibsProducts(
+    public ResponseEntity<List<DibsProductDTO>> getUserDibsProducts(
             @RequestHeader("Authorization") String token // JWT Access Token 받기
     ) {
         Long userId = jwtTokenGenerator.extractUserId(token); // JWT에서 userId 추출
 
         // 서비스 호출하여 찜 목록 조회
-        List<ProductDTO> products = userDibsService.getUserDibsProducts(userId);
+        List<DibsProductDTO> products = userDibsService.getUserDibsProducts(userId);
 
         return ResponseEntity.ok(products);
     }

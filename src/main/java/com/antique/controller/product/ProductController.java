@@ -71,8 +71,10 @@ public class ProductController {
     }
 
     @Operation(summary = "상품 삭제", description = "등록된 상품을 삭제하는 API입니다.")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/delete")
     public ResponseEntity<ProductResponseDTO> deleteProduct(
+            @RequestHeader("Authorization") String token,
             @Parameter(description = "삭제할 상품의 ID", required = true)
             @RequestParam Long productId) {
         ProductResponseDTO response = new ProductResponseDTO(

@@ -23,7 +23,7 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 설정하는 API입니다.")
+    @Operation(summary = "닉네임 설정", description = "사용자의 닉네임을 설정하는 API입니다.")
     @SecurityRequirement(name = "bearerAuth")
     @Parameters({
             @Parameter(name = "Authorization", description = "JWT Access Token", required = true),

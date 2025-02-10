@@ -83,7 +83,7 @@ public class ReviewController {
         Review updatedReview = reviewService.updateReview(reviewerId, reviewRequest);
 
         GenericResponseDTO responseDto = new GenericResponseDTO(
-                updatedReview.getReviewId(),
+                reviewId,
                 "리뷰가 성공적으로 수정되었습니다.",
                 HttpStatus.OK.value()
         );
