@@ -2,17 +2,14 @@ package com.antique.dto.review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewRequestDTO {
-    @Schema(description = "리뷰 작성자 ID")
-    @NotNull
-    private Long reviewerId; // 리뷰 작성자 ID
 
     @Schema(description = "리뷰 대상자 ID")
     @NotNull

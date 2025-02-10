@@ -37,9 +37,9 @@ public class ProductService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public Long registerProduct(ProductRequestDTO request) {
+    public Long registerProduct(Long userId, ProductRequestDTO request) {
         // 1. 판매자 확인
-        User seller = userRepository.findById(request.getUserId())
+        User seller = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 2. 카테고리 확인
@@ -76,12 +76,12 @@ public class ProductService {
     }
 
     @Transactional
-    public Long updateProduct(ProductUpdateDTO request) {
+    public Long updateProduct(Long userId, ProductUpdateDTO request) {
         // 1. 상품 확인
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
         // 2. 판매자 확인
-        User seller = userRepository.findById(request.getUserId())
+        User seller = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
         // 3. 카테고리 확인
         Category category = categoryRepository.findById(request.getCategoryId())

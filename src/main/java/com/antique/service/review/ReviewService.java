@@ -53,8 +53,8 @@ public class ReviewService {
     * 리뷰 작성
     */
     @Transactional
-    public Review createReview(ReviewRequestDTO reviewRequest) {
-        User reviewer = userRepository.findById(reviewRequest.getReviewerId())
+    public Review createReview(Long reviewerId, ReviewRequestDTO reviewRequest) {
+        User reviewer = userRepository.findById(reviewerId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         User reviewedUser = userRepository.findById(reviewRequest.getReviewedUserId())

@@ -34,7 +34,7 @@ public class GoogleLoginController {
      * Google 로그인 페이지로 리디렉트
      */
     @Operation(summary = "Google 로그인 페이지로 이동", description = "사용자를 Google OAuth 로그인 페이지로 리디렉트합니다.")
-    @GetMapping("/login/google")
+    @GetMapping("/googleLogin/page")
     public void GoogleLogin(HttpServletResponse response) {
         String googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth"
                 + "?client_id=" + clientId
@@ -52,7 +52,7 @@ public class GoogleLoginController {
      * Google OAuth 로그인 처리
      */
     @Operation(summary = "Google OAuth 로그인", description = "Google 인증 후 받은 code를 통해 로그인 또는 회원가입을 처리합니다.")
-    @GetMapping("/oauth2/callback")
+    @GetMapping("/googleLogin/callback")
     public ResponseEntity<GoogleLoginDTO> handleGoogleLogin(@RequestParam String code) {
         GoogleAccountProfileResponse googleProfile = googleClient.getGoogleAccountProfile(code);
         GoogleLoginDTO response = googleLoginService.loginOrRegisterUser(googleProfile);
