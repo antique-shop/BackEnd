@@ -5,6 +5,7 @@ import com.antique.domain.Category;
 import com.antique.domain.Dibs;
 import com.antique.domain.Product;
 import com.antique.domain.User;
+import com.antique.dto.dibs.DibsProductDTO;
 import com.antique.dto.product.ProductDTO;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
@@ -108,24 +109,16 @@ class UserDibsServiceTest {
         when(dibsRepository.findByUser(user)).thenReturn(List.of(dibs1, dibs2));
 
         // When: 서비스 호출
-        List<ProductDTO> result = userDibsService.getUserDibsProducts(1L);
+        List<DibsProductDTO> result = userDibsService.getUserDibsProducts(1L);
 
         // Then: 검증
         assertThat(result).hasSize(2);
 
-        ProductDTO productDTO1 = result.get(0);
+        DibsProductDTO productDTO1 = result.get(0);
         assertThat(productDTO1.getProductId()).isEqualTo(101L);
-        assertThat(productDTO1.getName()).isEqualTo(product1.getName());
-        assertThat(productDTO1.getDescription()).isEqualTo(product1.getDescription());
-        assertThat(productDTO1.getPrice()).isEqualTo(product1.getPrice());
-        assertThat(productDTO1.getSellerNickName()).isEqualTo(product1.getSeller().getNickname());
 
-        ProductDTO productDTO2 = result.get(1);
+        DibsProductDTO productDTO2 = result.get(1);
         assertThat(productDTO2.getProductId()).isEqualTo(102L);
-        assertThat(productDTO2.getName()).isEqualTo(product2.getName());
-        assertThat(productDTO2.getDescription()).isEqualTo(product2.getDescription());
-        assertThat(productDTO2.getPrice()).isEqualTo(product2.getPrice());
-        assertThat(productDTO2.getSellerNickName()).isEqualTo(product2.getSeller().getNickname());
 
         verify(userRepository, times(1)).findById(1L);
         verify(dibsRepository, times(1)).findByUser(user);

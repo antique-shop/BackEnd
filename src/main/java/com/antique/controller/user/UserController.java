@@ -1,12 +1,13 @@
 package com.antique.controller.user;
 
 
-import com.antique.dto.user.UpdateNicknameDTO;
 import com.antique.dto.user.UserResponseDTO;
+import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,25 +21,28 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "유저 API", description = "사용자와 관련된 API 목록입니다.")
 public class UserController {
     private final UserService userService;
+    private final JwtTokenGenerator jwtTokenGenerator;
 
-    @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 설정하는 API입니다.")
+    @Operation(summary = "닉네임 설정", description = "사용자의 닉네임을 설정하는 API입니다.")
+    @SecurityRequirement(name = "bearerAuth")
     @Parameters({
-            @Parameter(name = "userId", description = "사용자 ID", required = true),
+            @Parameter(name = "Authorization", description = "JWT Access Token", required = true),
             @Parameter(name = "nickname", description = "변경할 닉네임", required = true)
     })
     @PostMapping("/updateNickname")
-    public ResponseEntity<UserResponseDTO> updateUserNickname(@RequestBody UpdateNicknameDTO updateNicknameDTO) {
-        Long userId = updateNicknameDTO.getUserId();
-        String userNickname = updateNicknameDTO.getNickname();
+    public ResponseEntity<UserResponseDTO> updateUserNickname(
+            @RequestHeader("Authorization") String token,  // JWT Access Token 받기
+            @RequestParam("nickname") String nickname) {   // 변경할 닉네임 받기
+
+        Long userId = jwtTokenGenerator.extractUserId(token); // JWT에서 userId 추출
+
         // 서비스 호출
-        Long updatedUserId = userService.updateUserNickname(userId, userNickname);
+        Long updatedUserId = userService.updateUserNickname(userId, nickname);
 
         // 성공 응답 객체 생성
         UserResponseDTO responseDto = new UserResponseDTO(
-                updatedUserId,
                 "닉네임이 성공적으로 설정되었습니다.",
-                HttpStatus.OK.value(),// HTTP 상태 코드,
-                null
+                HttpStatus.OK.value()
         );
 
         // 성공 응답 반환
@@ -54,10 +58,8 @@ public class UserController {
 
         // 닉네임이 사용 가능한 경우 200 반환
         UserResponseDTO responseDto = new UserResponseDTO(
-                null,
                 "해당 닉네임은 사용 가능합니다.",
-                HttpStatus.OK.value(),
-                null
+                HttpStatus.OK.value()
         );
         return ResponseEntity.ok(responseDto);
     }

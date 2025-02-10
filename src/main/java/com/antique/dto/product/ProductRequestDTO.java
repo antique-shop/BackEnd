@@ -10,9 +10,6 @@ import java.util.List;
 @Builder
 public class ProductRequestDTO {
 
-    @Schema(description = "user id", example = "1", required = true)
-    private Long userId;
-
     @Schema(description = "상품명", example = "Vintage Pants", required = true)
     private String name;
 

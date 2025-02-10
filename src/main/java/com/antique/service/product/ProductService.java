@@ -37,9 +37,9 @@ public class ProductService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public Long registerProduct(ProductRequestDTO request) {
+    public Long registerProduct(Long userId, ProductRequestDTO request) {
         // 1. 판매자 확인
-        User seller = userRepository.findById(request.getUserId())
+        User seller = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
 
         // 2. 카테고리 확인
@@ -76,12 +76,12 @@ public class ProductService {
     }
 
     @Transactional
-    public Long updateProduct(ProductUpdateDTO request) {
+    public Long updateProduct(Long userId, ProductUpdateDTO request) {
         // 1. 상품 확인
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new BaseException(CommonErrorCode.PRODUCT_NOT_FOUND));
         // 2. 판매자 확인
-        User seller = userRepository.findById(request.getUserId())
+        User seller = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
         // 3. 카테고리 확인
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -113,6 +113,12 @@ public class ProductService {
         // 2. 판매 중이면서 삭제되지 않은 상품 조회
         List<Product> availableProducts = productRepository.findBySellerAndStatusAndIsDeleted(
                 seller, Product.Status.AVAILABLE, false);
+
+        // 3. 판매 중인 상품이 없을 경우 예외 발생
+        if (availableProducts.isEmpty()) {
+            throw new BaseException(CommonErrorCode.NO_PRODUCT);
+        }
+
         // 3. Product 엔티티를 ProductDTO로 변환하여 반환 (이미지 포함)
         return availableProducts.stream()
                 .map(product -> new ProductGetDTO(

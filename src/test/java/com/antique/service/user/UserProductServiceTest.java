@@ -53,14 +53,14 @@ class UserProductServiceTest {
         Category category = new Category(Category.CategoryName.TOPS);
         Product product = TestDataFactory.createProductWithDefaults(productId, seller, category);
 
-        ProductRequestDTO request = TestDataFactory.createProductRequestDTOWithDefaults(sellerUserId, categoryId);
+        ProductRequestDTO request = TestDataFactory.createProductRequestDTOWithDefaults(categoryId);
 
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.of(seller));
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         // When: 서비스 호출
-        productId = productService.registerProduct(request);
+        productId = productService.registerProduct(sellerUserId, request);
 
         // Then: 결과 검증
         assertThat(productId).isNotNull();
@@ -88,12 +88,12 @@ class UserProductServiceTest {
         // Given: 존재하지 않는 판매자 ID
         Long sellerUserId = 999L;
         Long categoryId = 1L;
-        ProductRequestDTO request = TestDataFactory.createProductRequestDTOWithDefaults(sellerUserId, categoryId);
+        ProductRequestDTO request = TestDataFactory.createProductRequestDTOWithDefaults(categoryId);
 
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        BaseException exception = assertThrows(BaseException.class, () -> productService.registerProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.registerProduct(sellerUserId, request));
         assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.USER_NOT_FOUND); // 에러 코드 확인
 
         verify(productRepository, never()).save(any(Product.class));
@@ -106,13 +106,13 @@ class UserProductServiceTest {
         Long categoryId = 999L;
         User seller = TestDataFactory.createUser(sellerUserId, "seller@example.com", "SellerNickname");
 
-        ProductRequestDTO request = TestDataFactory.createProductRequestDTOWithDefaults(sellerUserId, categoryId);
+        ProductRequestDTO request = TestDataFactory.createProductRequestDTOWithDefaults(categoryId);
 
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.of(seller));
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        BaseException exception = assertThrows(BaseException.class, () -> productService.registerProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.registerProduct(sellerUserId, request));
         assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.CATEGORY_NOT_FOUND); // 에러 코드 확인
 
         verify(productRepository, never()).save(any(Product.class));
@@ -129,14 +129,14 @@ class UserProductServiceTest {
         Category category = TestDataFactory.createCategory(categoryId, Category.CategoryName.TOPS);
         Product existingProduct = TestDataFactory.createProduct(productId, "Old Name", "Old Description", 1000);
 
-        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, sellerUserId, categoryId);
+        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, categoryId);
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.of(seller));
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
 
         // When: 서비스 호출
-        Long updatedProductId = productService.updateProduct(request);
+        Long updatedProductId = productService.updateProduct(sellerUserId, request);
 
         // Then: 결과 검증
         assertThat(updatedProductId).isEqualTo(productId);
@@ -162,12 +162,12 @@ class UserProductServiceTest {
         Long productId = 999L;
         Long userId = 2L;
         Long categoryId = 3L;
-        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, userId, categoryId);
+        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, categoryId);
 
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(userId, request));
         assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.PRODUCT_NOT_FOUND); // 에러 코드 확인
 
         verify(productRepository, never()).save(any(Product.class));
@@ -181,13 +181,13 @@ class UserProductServiceTest {
         Long categoryId = 3L;
 
         Product existingProduct = TestDataFactory.createProduct(productId, "Old Name", "Old Description", 1000);
-        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, sellerUserId, categoryId);
+        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, categoryId);
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
         when(userRepository.findById(sellerUserId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(sellerUserId, request));
         assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.USER_NOT_FOUND); // 에러 코드 확인
 
         verify(productRepository, never()).save(any(Product.class));
@@ -202,13 +202,13 @@ class UserProductServiceTest {
 
         Product existingProduct = TestDataFactory.createProduct(productId, "Old Name", "Old Description", 1000);
         User seller = TestDataFactory.createUser(2L, "seller@example.com", "SellerNickname");
-        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, userId, categoryId);
+        ProductUpdateDTO request = TestDataFactory.createProductUpdateDTOWithDefaults(productId, categoryId);
         when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
         when(userRepository.findById(2L)).thenReturn(Optional.of(seller));
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         // When & Then: 예외 검증
-        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(request));
+        BaseException exception = assertThrows(BaseException.class, () -> productService.updateProduct(userId, request));
         assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.CATEGORY_NOT_FOUND); // 에러 코드 확인
 
         verify(productRepository, never()).save(any(Product.class));

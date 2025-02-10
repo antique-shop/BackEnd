@@ -8,6 +8,7 @@ import com.antique.service.review.ReviewService;
 import com.antique.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class ReviewController {
     * 특정 사용자 리뷰 조회
     */
     @Operation(summary = "특정 사용자 리뷰 조회 API", description = "특정 사용자의 리뷰를 조회하는 API입니다.")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/getUserReviews")
     public List<GetUserReviewDTO> getUserReviews(
             @Parameter(description = "JWT Access Token", required = true)
@@ -43,9 +45,14 @@ public class ReviewController {
      * 리뷰 작성
      */
     @Operation(summary = "리뷰 작성 API", description = "리뷰를 작성하는 API입니다.")
+    @Parameter(name = "Authorization", description = "JWT Access Token", required = true)
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/postReview")
-    public ResponseEntity<GenericResponseDTO> createReview(@RequestBody ReviewRequestDTO reviewRequest) {
-        Review review = reviewService.createReview(reviewRequest);
+    public ResponseEntity<GenericResponseDTO> createReview(
+            @RequestHeader("Authorization") String token,
+            @RequestBody ReviewRequestDTO reviewRequest) {
+        Long reviewerId = jwtTokenGenerator.extractUserId(token);
+        Review review = reviewService.createReview(reviewerId, reviewRequest);
 
         Long reviewId = review.getReviewId();
 
@@ -63,12 +70,17 @@ public class ReviewController {
      * 리뷰 수정
      */
     @Operation(summary = "리뷰 수정 API", description = "특정 리뷰를 수정하는 API입니다.")
+    @Parameter(name = "Authorization", description = "JWT Access Token", required = true)
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/updateReview")
     public ResponseEntity<GenericResponseDTO> updateReview(
             @Parameter(description = "수정할 리뷰의 ID", required = true)
             @RequestParam Long reviewId,
+            @RequestHeader("Authorization") String token,
             @RequestBody ReviewRequestDTO reviewRequest) {
-        Review updatedReview = reviewService.updateReview(reviewId, reviewRequest);
+        Long reviewerId = jwtTokenGenerator.extractUserId(token);
+
+        Review updatedReview = reviewService.updateReview(reviewerId, reviewRequest);
 
         GenericResponseDTO responseDto = new GenericResponseDTO(
                 reviewId,

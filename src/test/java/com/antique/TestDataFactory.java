@@ -34,9 +34,8 @@ public class TestDataFactory {
     }
 
     // ProductRequestDTO 생성
-    public static ProductRequestDTO createProductRequestDTO(Long userId, String name, String description, int price, Long categoryId, List<String> images) {
+    public static ProductRequestDTO createProductRequestDTO(String name, String description, int price, Long categoryId, List<String> images) {
         return ProductRequestDTO.builder()
-                .userId(userId)
                 .name(name)
                 .description(description)
                 .price(price)
@@ -47,9 +46,8 @@ public class TestDataFactory {
 
 
 
-    public static ProductRequestDTO createProductRequestDTOWithDefaults(Long userId, Long categoryId) {
+    public static ProductRequestDTO createProductRequestDTOWithDefaults(Long categoryId) {
         return createProductRequestDTO(
-                userId,
                 "Default Product Name",
                 "Default Description",
                 100000,
@@ -59,10 +57,9 @@ public class TestDataFactory {
     }
 
     // ProductUpdateDTO 생성
-    public static ProductUpdateDTO createProductUpdateDTO(Long productId, Long userId, Long categoryId, String name, String description, int price, List<String> images) {
+    public static ProductUpdateDTO createProductUpdateDTO(Long productId, Long categoryId, String name, String description, int price, List<String> images) {
         return ProductUpdateDTO.builder()
                 .productId(productId)
-                .userId(userId)
                 .categoryId(categoryId)
                 .name(name)
                 .description(description)
@@ -71,10 +68,9 @@ public class TestDataFactory {
                 .build();
     }
 
-    public static ProductUpdateDTO createProductUpdateDTOWithDefaults(Long productId, Long userId, Long categoryId) {
+    public static ProductUpdateDTO createProductUpdateDTOWithDefaults(Long productId, Long categoryId) {
         return createProductUpdateDTO(
                 productId,
-                userId,
                 categoryId,
                 "Default Product Name",
                 "Default Description",

@@ -4,6 +4,7 @@ import com.antique.domain.Dibs;
 import com.antique.domain.Product;
 import com.antique.domain.ProductImage;
 import com.antique.domain.User;
+import com.antique.dto.dibs.DibsProductDTO;
 import com.antique.exception.BaseException;
 import com.antique.exception.CommonErrorCode;
 import com.antique.dto.product.ProductDTO;
@@ -69,7 +70,7 @@ public class UserDibsService {
 
 
     @Transactional(readOnly = true)
-    public List<ProductDTO> getUserDibsProducts(Long userId) {
+    public List<DibsProductDTO> getUserDibsProducts(Long userId) {
         // 유저 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(CommonErrorCode.USER_NOT_FOUND));
@@ -77,20 +78,20 @@ public class UserDibsService {
         // 찜 목록 조회
         List<Dibs> dibsList = dibsRepository.findByUser(user);
 
+        // 찜한 상품이 없을 경우 예외 발생
+        if (dibsList.isEmpty()) {
+            throw new BaseException(CommonErrorCode.NO_DIBS);
+        }
+
         // `Dibs`의 `Product` 데이터를 `ProductDTO`로 매핑하여 반환
         return dibsList.stream()
                 .map(dibs -> {
                     var product = dibs.getProduct();
-                    return new ProductDTO(
+                    return new DibsProductDTO(
                             product.getProductId(),
-                            product.getName(),
-                            product.getDescription(),
-                            product.getPrice(),
-                            product.getStatus().name(),
                             product.getProductImages().stream()
                                     .map(ProductImage::getProductImageUrl) // 이미지 URL 리스트로 변환
-                                    .collect(Collectors.toList()),
-                            product.getSeller().getNickname() // 판매자 닉네임 매핑
+                                    .collect(Collectors.toList())
                     );
                 })
                 .collect(Collectors.toList());

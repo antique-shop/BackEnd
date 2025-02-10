@@ -10,9 +10,6 @@ import java.util.List;
 @Builder
 public class ProductUpdateDTO {
 
-    @Schema(description = "user id", example = "1", required = true)
-    private Long userId;
-
     @Schema(description = "product id", example = "101", required = true)
     private Long productId;
 

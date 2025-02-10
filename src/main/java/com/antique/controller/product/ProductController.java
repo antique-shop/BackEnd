@@ -11,6 +11,7 @@ import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,9 +31,14 @@ public class ProductController {
     private final JwtTokenGenerator jwtTokenGenerator;
 
     @Operation(summary = "상품 등록", description = "사용자가 새로운 상품을 등록하는 API입니다.")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/register")
-    public ResponseEntity<ProductResponseDTO> registerProduct(@RequestBody ProductRequestDTO request) {
-        Long productId = productService.registerProduct(request);
+    public ResponseEntity<ProductResponseDTO> registerProduct(
+            @RequestHeader("Authorization") String token,
+            @RequestBody ProductRequestDTO request) {
+        Long userId = jwtTokenGenerator.extractUserId(token);
+        Long productId = productService.registerProduct(userId, request);
+
         // 응답 DTO 생성
         ProductResponseDTO response = new ProductResponseDTO(
                 productId,
@@ -48,9 +54,14 @@ public class ProductController {
     상품 수정
     */
     @Operation(summary = "상품 수정", description = "사용자가 상품 정보를 수정하는 API입니다.")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/update")
-    public ResponseEntity<ProductResponseDTO> updateProduct(@RequestBody ProductUpdateDTO request) {
-        Long updatedProductId = productService.updateProduct(request);
+    public ResponseEntity<ProductResponseDTO> updateProduct(
+            @RequestHeader("Authorization") String token,
+            @RequestBody ProductUpdateDTO request) {
+        Long userId = jwtTokenGenerator.extractUserId(token);
+        Long updatedProductId = productService.updateProduct(userId, request);
+
         ProductResponseDTO response = new ProductResponseDTO(
                 updatedProductId,
                 "상품이 성공적으로 수정되었습니다.",
@@ -60,8 +71,10 @@ public class ProductController {
     }
 
     @Operation(summary = "상품 삭제", description = "등록된 상품을 삭제하는 API입니다.")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/delete")
     public ResponseEntity<ProductResponseDTO> deleteProduct(
+            @RequestHeader("Authorization") String token,
             @Parameter(description = "삭제할 상품의 ID", required = true)
             @RequestParam Long productId) {
         ProductResponseDTO response = new ProductResponseDTO(
