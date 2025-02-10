@@ -4,7 +4,6 @@ import com.antique.TestDataFactory;
 import com.antique.domain.User;
 import com.antique.dto.login.google.GoogleAccountProfileResponse;
 import com.antique.dto.login.google.GoogleLoginDTO;
-import com.antique.dto.user.UserResponseDTO;
 import com.antique.repository.UserRepository;
 import com.antique.service.jwt.JwtTokenGenerator;
 import com.antique.service.jwt.RefreshTokenService;
