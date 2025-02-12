@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
@@ -117,7 +118,7 @@ class ProductServiceTest {
 
         // Then
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
         ProductInfoDTO productInfo = response.getBody();
         assertNotNull(productInfo);
         assertEquals(productId, productInfo.getProductId());

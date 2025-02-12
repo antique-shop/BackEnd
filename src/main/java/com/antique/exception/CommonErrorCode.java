@@ -28,7 +28,8 @@ public enum CommonErrorCode implements ErrorCode {
     GOOGLE_REDIRECT_FAILED(HttpStatus.BAD_REQUEST, "Google 리다이렉트 요청에 실패했습니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다."),
     REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "Refresh Token이 일치하지 않습니다."),
-    KAKAO_REDIRECT_FAILED(HttpStatus.BAD_REQUEST, "Kakao 리다이렉트 요청에 실패했습니다.");
+    KAKAO_REDIRECT_FAILED(HttpStatus.BAD_REQUEST, "Kakao 리다이렉트 요청에 실패했습니다."),
+    SMS_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SMS 전송에 실패했습니다.");
 
     private final HttpStatus status;
     private final String message;
