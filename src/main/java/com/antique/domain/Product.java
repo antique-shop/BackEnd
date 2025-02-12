@@ -57,7 +57,7 @@ public class Product {
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Dibs> dibs;
