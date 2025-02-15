@@ -2,9 +2,9 @@ name: antique_github_action
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 env:
   S3_BUCKET_NAME: antique_bucket
