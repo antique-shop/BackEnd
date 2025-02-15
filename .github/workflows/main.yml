@@ -31,6 +31,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          arguments: build
           
       - name: Ensure src/main/resources directory exists
         run: mkdir -p src/main/resources  # 디렉토리 없으면 생성
@@ -46,3 +47,43 @@ jobs:
       - name: Build with Gradle
         run: 
           ./gradlew clean build
+      - name: Copy Jar
+        run: cp ./build/libs/*.jar ./deploy #jar 파일 위치 잘 보고 수정
+
+      - name: Make zip file
+        run: zip -r ./antique.zip ./deploy #zip 파일명은 수정 가능
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./antique.zip s3://$S3_BUCKET_NAME/
+      #리전명과 zip파일명을 보고 코드 수정
+      
+      # appspec.yml 파일 복사
+      - name: Copy appspec.yml
+        run: cp ./appspec.yml ./deploy
+
+
+      # script files 복사
+      - name: Copy script
+        run: cp ./scripts/*.sh ./deploy
+
+      - name: Make zip file
+        run: zip -r ./antique.zip ./deploy
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./antique.zip s3://$S3_BUCKET_NAME/
