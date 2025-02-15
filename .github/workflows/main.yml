@@ -32,6 +32,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
+      - name: Ensure src/main/resources directory exists
+        run: mkdir -p src/main/resources  # 디렉토리 없으면 생성
+          
       - name: Create application.properties from GitHub Secrets
         run: |
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
