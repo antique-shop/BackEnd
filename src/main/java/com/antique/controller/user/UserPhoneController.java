@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "유저 번호 인증 API", description = "번호 인증 관련된 API 목록입니다.")
 public class UserPhoneController {
-
     private final UserPhoneService userPhoneService;
 
     @Operation(summary = "유저 번호 인증", description = "유저의 핸드폰 번호를 인증하는 API입니다.")
