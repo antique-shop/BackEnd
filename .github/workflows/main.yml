@@ -47,6 +47,11 @@ jobs:
       - name: Build with Gradle
         run: 
           ./gradlew clean build
+          
+      # 디렉토리 생성
+      - name: Make Directory
+        run: mkdir -p deploy
+        
       - name: Copy Jar
         run: cp ./build/libs/*.jar ./deploy #jar 파일 위치 잘 보고 수정
 
