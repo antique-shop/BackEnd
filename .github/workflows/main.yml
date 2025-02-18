@@ -68,13 +68,13 @@ jobs:
     steps:
       # latest image pull
       - name: docker pull
-        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
 
       - name: docker stop container
         run: sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
 
       - name: docker run latest container
-        run: sudo docker run --name github-actions-demo --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
+        run: sudo docker run --name antique-app --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
         
       - name: clean unused images
         run: sudo docker system prune -f
