@@ -1,7 +1,9 @@
 package com.antique.service.jwt;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.time.Duration;
 public class RefreshTokenService {
 
     private final RedisTemplate<String, String> redisTemplate;
+
 
     @Value("${jwt.refresh-expiration}")
     private long refreshTokenExpiration;
@@ -44,5 +47,17 @@ public class RefreshTokenService {
      */
     public void deleteRefreshToken(Long userId) {
         redisTemplate.delete(getKey(userId));
+    }
+
+    @PostConstruct
+    public void testRedisConnection() {
+        try {
+            redisTemplate.opsForValue().set("testKey", "Hello AWS Redis", Duration.ofMinutes(10));
+            String value = redisTemplate.opsForValue().get("testKey");
+            System.out.println("✅ Redis 저장 및 조회 성공: " + value);
+        } catch (Exception e) {
+            System.err.println("❌ Redis 저장 실패: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
