@@ -38,6 +38,9 @@ jobs:
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
           echo "✅ application.properties 생성 완료"
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
       # ✅ 5. Gradle 빌드 (bootJar 생성)
       - name: Build with Gradle
         run: ./gradlew clean bootJar
