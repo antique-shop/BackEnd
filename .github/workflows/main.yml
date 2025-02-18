@@ -59,3 +59,22 @@ jobs:
       # ✅ 8. Docker 이미지 푸시
       - name: Push Docker Image to DockerHub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
+
+  run-docker-image-on-ec2:
+    # build docker image완료시 실행
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      # latest image pull
+      - name: docker pull
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
+
+      - name: docker stop container
+        run: sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+
+      - name: docker run latest container
+        run: sudo docker run --name github-actions-demo --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
+        
+      - name: clean unused images
+        run: sudo docker system prune -f
