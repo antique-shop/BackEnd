@@ -48,16 +48,4 @@ public class RefreshTokenService {
     public void deleteRefreshToken(Long userId) {
         redisTemplate.delete(getKey(userId));
     }
-
-    @PostConstruct
-    public void testRedisConnection() {
-        try {
-            redisTemplate.opsForValue().set("testKey", "Hello AWS Redis", Duration.ofMinutes(10));
-            String value = redisTemplate.opsForValue().get("testKey");
-            System.out.println("✅ Redis 저장 및 조회 성공: " + value);
-        } catch (Exception e) {
-            System.err.println("❌ Redis 저장 실패: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }
