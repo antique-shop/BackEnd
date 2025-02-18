@@ -1,13 +1,10 @@
-name: antique_github_action
+name: Docker CI/CD
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
-env:
-  S3_BUCKET_NAME: antique-bucket-1
 
 jobs:
   build:
@@ -41,54 +38,49 @@ jobs:
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
           echo "✅ application.properties 생성 완료"
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
+      # ✅ 5. Gradle 빌드 (bootJar 생성)
       - name: Build with Gradle
-        run: 
-          ./gradlew clean build
-          
-      # 디렉토리 생성
-      - name: Make Directory
-        run: mkdir -p deploy
+        run: ./gradlew clean bootJar
         
-      - name: Copy Jar
-        run: cp ./build/libs/*.jar ./deploy #jar 파일 위치 잘 보고 수정
+      # ✅ 6. Docker 이미지 빌드
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/antique-app .
 
-      - name: Make zip file
-        run: zip -r ./antique.zip ./deploy #zip 파일명은 수정 가능
-        shell: bash
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      # ✅ 7. DockerHub 로그인
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./antique.zip s3://$S3_BUCKET_NAME/
-      #리전명과 zip파일명을 보고 코드 수정
-      
-      # appspec.yml 파일 복사
-      - name: Copy appspec.yml
-        run: cp ./appspec.yml ./deploy
+      # ✅ 8. Docker 이미지 푸시
+      - name: Push Docker Image to DockerHub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
 
+  deploy:
+    needs: build
+    runs-on: self-hosted  # EC2에서 실행됨
 
-      # script files 복사
-      - name: Copy script
-        run: cp ./scripts/*.sh ./deploy
+    steps:
+      # ✅ 1. 최신 Docker 이미지 Pull
+      - name: Pull Latest Docker Image
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
 
-      - name: Make zip file
-        run: zip -r ./antique.zip ./deploy
-        shell: bash
+      # ✅ 2. 기존 컨테이너 중지 및 삭제 (있다면)
+      - name: Stop and Remove Old Container
+        run: |
+          sudo docker stop antique-app || true
+          sudo docker rm antique-app || true
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+      # ✅ 3. 새로운 컨테이너 실행
+      - name: Run New Docker Container
+        run: |
+          sudo docker run -d \
+            --name antique-app \
+            -p 8080:8080 \
+            --restart always \
+            ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
 
-      - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./antique.zip s3://$S3_BUCKET_NAME/
+      # ✅ 4. 불필요한 Docker 이미지 정리
+      - name: Clean Up Unused Docker Images
+        run: sudo docker system prune -f
