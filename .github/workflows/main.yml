@@ -70,11 +70,21 @@ jobs:
       - name: docker pull
         run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
 
-      - name: docker stop container
-        run: sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+      - name: Stop and Remove Old Container
+        run: |
+          if [ $(sudo docker ps -aq -f name=antique-app) ]; then
+            sudo docker stop antique-app
+            sudo docker rm antique-app
+          fi
 
-      - name: docker run latest container
-        run: sudo docker run --name antique-app --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
+      # ✅ 새로운 컨테이너 실행
+      - name: Run New Docker Container
+        run: |
+          sudo docker run -d \
+            --name antique-app \
+            -p 8080:8080 \
+            --restart always \
+            ${{ secrets.DOCKERHUB_USERNAME }}/antique-app
         
       - name: clean unused images
         run: sudo docker system prune -f
